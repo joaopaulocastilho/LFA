@@ -6,6 +6,7 @@
 #include<utility>
 #include<string>
 #include<vector>
+#include<map>
 using namespace std;
 
 //Ainda não tá bem definido o que faz, mas a princípio recebe uma linha de uma gramática e trata ela.
