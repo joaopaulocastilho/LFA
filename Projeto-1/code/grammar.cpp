@@ -11,44 +11,96 @@ int next_simb(char linha[], int s, char simbol) {
   return i;
 }
 
-void grammar_treatment(char linha[], int &states_cont, int &symbols_cont, vector < pair<int, string> > &states_name, viii &afnd, map<string, int> &terms) {
-  int i, j, flag = 1, qtty_term = 0;
-  char state[MAX], term[MAX], n_term[MAX];
-  /*AUXILIARES PARA TRABALHAR COM O VECTOR DE 3 DIMENSÕES*/
-  vi c;
-  vii cc;
-  /*FIM DOS AUXILIARES*/
-  //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
-  for (i = next_simb(linha, 0, '<') + 1, j = 0; linha[i] != '>'; i++) state[j++] = linha[i];
-  state[j] = '\0';
-  //printf("%s\n", state); //DEBUG
-  //coloca o estado no vector de estados (states_name)
-  states_name.push_back(make_pair(states_cont++, string(state)));
-  //Como a gramática é regular, vamos pular o "::=" e parar no primeiro símbolo depois do '='
-  i = next_simb(linha, i, '=') + 1;
-  //Tem que mapear todos os símbolos terminais até o \n
-  while (flag) {
-    for (j = 0; linha[i] != '<' && linha[i] != '\n' && linha[i] != '|'; i++) {
-      if (linha[i] != ' ') term[j++] = linha[i];
-    }
-    term[j] = '\0';
-    //Verificar se o terminal já está no map, se não estiver, insere.
-    if (terms.find(string(term)) == terms.end()) {
-      terms[string(term)] = qtty_term++;
 
+int take_state_name(char linha[], char state[], int i) {
+  int j;
+  for (i = next_simb(linha, i, '<') + 1, j = 0; linha[i] != '>'; i++) state[j++] = linha[i];
+  state[j] = '\0';
+  return i;
+}
+
+int take_term_name(char linha[], char term[], int i) {
+  int j;
+  for (j = 0; linha[i] != '<' && linha[i] != '\n' && linha[i] != '|'; i++) {
+    if (linha[i] != ' ') term[j++] = linha[i];
+  }
+  term[j] = '\0';
+  return i;
+}
+
+void symbols_mape(FILE *input_file, int &states_cont, vs &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms) {
+  int i, j, flag;
+  char linha[MAX], state[MAX], term[MAX];
+  fseek(input_file, 0, SEEK_SET);
+  while (fgets(linha, MAX, input_file)) {
+    flag = 1;
+    //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
+    i = take_state_name(linha, state, 0);
+    if (map_states.find(string(state)) == map_states.end()) {
+      map_states[string(state)] = states_cont++;
+      states_name.push_back(string(state));
     }
-    //Se linha[i] == '<' quer dizer que tem um não terminal depois do terminal.
-    if (linha[i] == '<') {
-      //Pegando o não terminal daquela produção.
-      for (i += 1, j = 0; linha[i] != '>'; i++) {
-        n_term[j++] = linha[i];
+    //Mapear os simbolos terminais
+    //Como a gramática é regular, vamos pular o "::=" e parar no primeiro símbolo depois do '='
+    i = next_simb(linha, i, '=') + 1;
+    //Tem que mapear todos os símbolos terminais até o \n
+    while (flag) {
+      i = take_term_name(linha, term, i);
+      //Verificar se o terminal já está no map, se não estiver, insere.
+      if (strcmp(term, "eps") && map_terms.find(string(term)) == map_terms.end()) {
+        map_terms[string(term)] = terms_cont++;
+        terms_name.push_back(string(term));
       }
-      n_term[j] = '\0';
+     //Quer dizer que não terá mais produções naquela regra da gramática
+     if ((i = next_simb(linha, i, '|')) == -1) flag = 0;
+     i++;
+   }
+ }
+}
+
+void create_afnd(FILE *input_file, int &states_cont, vs &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, viii &afnd) {
+  int i, j, flag = 1;
+  int id_current_state, id_current_term, transition;
+  char linha[MAX], state[MAX], term[MAX];
+  fseek(input_file, 0, SEEK_SET);
+  while (fgets(linha, MAX, input_file)) {
+    flag = 1;
+    //Pegar o estado que está a esquerda do ::=
+    i = take_state_name(linha, state, 0);
+    id_current_state = map_states[string(state)];
+    i = next_simb(linha, i, '=') + 1;
+    while (flag) {
+      i = take_term_name(linha, term, i);
+      if (strcmp(term, "eps")) {
+        id_current_term = map_terms[string(term)];
+        if (linha[i] == '<') {
+          //Quer dizer que tem um não-terminal depois do terminal.
+          i = take_state_name(linha, state, i);
+          transition = map_states[string(state)];
+        } else {
+          //não há um não-terminal depois do terminal
+          transition = -1;
+        }
+        //printf("estado: %d, terminal: %d\n", id_current_state, id_current_term); //otohu
+        afnd[id_current_state][id_current_term].push_back(transition);
+      }
+      //Quer dizer que não terá mais produções naquela regra da gramática
+      if ((i = next_simb(linha, i, '|')) == -1) flag = 0;
+      i++;
     }
-    //Quer dizer que não terá mais produções naquela regra da gramática
-    if ((i = next_simb(linha, i, '|')) == -1) flag = 0;
-    i++;
-    //printf("Terminal: %s\n", term); //DEBUG
-    //printf("Nao terminal: %s\n", n_term); //DEBUG
+  }
+}
+
+void print_afnd(int l, int c, viii &afnd) {
+  int i, j, k;
+  for (i = 0; i < l; i++) {
+    for (j = 0; j < c; j++) {
+      printf("[");
+      for (k = 0; k < (int)afnd[i][j].size(); k++) {
+        printf("%d,", afnd[i][j][k]);
+      }
+      printf("] ");
+    }
+    printf("\n");
   }
 }
