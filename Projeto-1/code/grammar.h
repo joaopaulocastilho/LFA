@@ -9,7 +9,11 @@
 #include<map>
 using namespace std;
 
+typedef vector<int> vi;
+typedef vector<vi> vii;
+typedef vector<vii> viii;
+
 //Ainda não tá bem definido o que faz, mas a princípio recebe uma linha de uma gramática e trata ela.
-void grammar_treatment(char linha[], int &states_cont, vector< pair<int, string> > &states_name);
+void grammar_treatment(char linha[], int &states_cont, int &symbols_cont, vector< pair<int, string> > &states_name, viii &afnd, map<string, int> &terms);
 
 #endif

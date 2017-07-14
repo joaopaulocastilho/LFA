@@ -11,10 +11,13 @@ int next_simb(char linha[], int s, char simbol) {
   return i;
 }
 
-void grammar_treatment(char linha[], int &states_cont, vector < pair<int, string> > &states_name) {
+void grammar_treatment(char linha[], int &states_cont, int &symbols_cont, vector < pair<int, string> > &states_name, viii &afnd, map<string, int> &terms) {
   int i, j, flag = 1, qtty_term = 0;
   char state[MAX], term[MAX], n_term[MAX];
-  map<string, int> terms;
+  /*AUXILIARES PARA TRABALHAR COM O VECTOR DE 3 DIMENSÕES*/
+  vi c;
+  vii cc;
+  /*FIM DOS AUXILIARES*/
   //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
   for (i = next_simb(linha, 0, '<') + 1, j = 0; linha[i] != '>'; i++) state[j++] = linha[i];
   state[j] = '\0';
@@ -32,6 +35,7 @@ void grammar_treatment(char linha[], int &states_cont, vector < pair<int, string
     //Verificar se o terminal já está no map, se não estiver, insere.
     if (terms.find(string(term)) == terms.end()) {
       terms[string(term)] = qtty_term++;
+
     }
     //Se linha[i] == '<' quer dizer que tem um não terminal depois do terminal.
     if (linha[i] == '<') {
