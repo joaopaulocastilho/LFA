@@ -28,8 +28,8 @@ int take_term_name(char linha[], char term[], int i) {
   return i;
 }
 
-void symbols_mape(FILE *input_file, int &states_cont, vs &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms) {
-  int i, j, flag;
+void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms) {
+  int i, j, flag, id_current_state = 0;
   char linha[MAX], state[MAX], term[MAX];
   fseek(input_file, 0, SEEK_SET);
   while (fgets(linha, MAX, input_file)) {
@@ -37,8 +37,9 @@ void symbols_mape(FILE *input_file, int &states_cont, vs &states_name, map<strin
     //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
     i = take_state_name(linha, state, 0);
     if (map_states.find(string(state)) == map_states.end()) {
+      id_current_state = states_cont;
       map_states[string(state)] = states_cont++;
-      states_name.push_back(string(state));
+      states_name.push_back(make_pair(string(state), false));
     }
     //Mapear os simbolos terminais
     //Como a gramática é regular, vamos pular o "::=" e parar no primeiro símbolo depois do '='
@@ -47,6 +48,9 @@ void symbols_mape(FILE *input_file, int &states_cont, vs &states_name, map<strin
     while (flag) {
       i = take_term_name(linha, term, i);
       //Verificar se o terminal já está no map, se não estiver, insere.
+      if (!strcmp(term, "eps") || linha[i] != '<') {
+        states_name[id_current_state].second = true;
+      }
       if (strcmp(term, "eps") && map_terms.find(string(term)) == map_terms.end()) {
         map_terms[string(term)] = terms_cont++;
         terms_name.push_back(string(term));
@@ -58,7 +62,7 @@ void symbols_mape(FILE *input_file, int &states_cont, vs &states_name, map<strin
  }
 }
 
-void create_afnd(FILE *input_file, int &states_cont, vs &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, viii &afnd) {
+void create_afnd(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, viii &afnd) {
   int i, j, flag = 1;
   int id_current_state, id_current_term, transition;
   char linha[MAX], state[MAX], term[MAX];
@@ -91,13 +95,17 @@ void create_afnd(FILE *input_file, int &states_cont, vs &states_name, map<string
   }
 }
 
-void print_afnd(int l, int c, viii &afnd) {
+void print_afnd(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name) {
   int i, j, k;
+  int first;
   for (i = 0; i < l; i++) {
+    printf("%s: ", states_name[i].first.c_str());
     for (j = 0; j < c; j++) {
       printf("[");
-      for (k = 0; k < (int)afnd[i][j].size(); k++) {
-        printf("%d,", afnd[i][j][k]);
+      for (k = 0, first = 1; k < (int)afnd[i][j].size(); k++) {
+        if (first && afnd[i][j][k] != -1) first = 0;
+        else if (afnd[i][j][k] != -1) printf(", ");
+        printf("%s", afnd[i][j][k] == -1 ? "" : states_name[afnd[i][j][k]].first.c_str());
       }
       printf("] ");
     }

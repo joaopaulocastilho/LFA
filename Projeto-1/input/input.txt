@@ -1,4 +1,4 @@
-<S> ::= a<B> | e<A> | i<A> | o<C> | u<S> | u<A> | <A> | a
+<S> ::= a<B> | a<A> | i<A> | o<B> | u<S> | u<A> | <A> | a
 <A> ::= a<A> | e<A> | i<A> | o<A> | u<A> | eps
 <B> ::= b<B>
 <C> ::= k<S>
