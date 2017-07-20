@@ -33,6 +33,10 @@ void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<strin
   int i;
   char linha_tmp[2];
   linha_tmp[1] = '\0';
+  if (!states_cont) {
+    map_states["S"] = states_cont++;
+    states_name.push_back(make_pair("S", false));
+  }
   for (i = 0; linha[i] != '\n'; i++) {
     linha_tmp[0] = linha[i];
     if (map_terms.find(string(linha_tmp)) == map_terms.end()) {
@@ -43,7 +47,7 @@ void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<strin
   states_qtty += strlen(linha) - 1;
 }
 
-void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[]) {
+void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], vi &transition_cont) {
   int i, j, flag, id_current_state = 0;
   char state[MAX], term[MAX];
   //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
@@ -58,6 +62,8 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   i = next_simb(linha, i, '=') + 1;
   //Tem que mapear todos os símbolos terminais até o \n
   flag = 1;
+  set<string>terminals_rule;
+  set<string>initial_state_terms;
   while (flag) {
     i = take_term_name(linha, term, i);
     //Verificar se o terminal já está no map, se não estiver, insere.
@@ -67,6 +73,13 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
     if (strcmp(term, "eps") && map_terms.find(string(term)) == map_terms.end()) {
       map_terms[string(term)] = terms_cont++;
       terms_name.push_back(string(term));
+      transition_cont.push_back(0);
+    }
+    //Este if é para a minimização do automato, pois precisaremos saber se temos que eliminar o terminal ou não.
+    if (strcmp(term, "eps") && terminals_rule.find(string(term)) == terminals_rule.end()) {
+      terminals_rule.insert(string(term));
+      transition_cont[map_terms[string(term)]]++; //Vetor que conta quantas transições é feita de um terminal a partir do estado.
+      printf("%s | %d\n", term, transition_cont[map_terms[string(term)]]);
     }
     //Quer dizer que não terá mais produções naquela regra da gramática
     if ((i = next_simb(linha, i, '|')) == -1) flag = 0;
@@ -74,13 +87,14 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   }
 }
 
-void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, int &states_qtty) {
+void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, int &states_qtty, vi &transition_cont) {
   int i, j, id_current_state = 0;
   char linha[MAX];
   fseek(input_file, 0, SEEK_SET);
   while (fgets(linha, MAX, input_file)) {
     if (next_simb(linha, 0, '<') == -1) mape_token(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, states_qtty);
-    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha);
+    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont);
+    printf("--------------------------------------\n"); ///DEBUGAÇÃO
   }
   states_qtty += states_cont;
 }
@@ -108,8 +122,8 @@ void tokens_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<stri
       id_current_terminal = map_terms[string(linha_tmp)];
       do {
         new_state_inc(last_state_generated);
-      } while (!(map_states.find(string(last_state_generated)) == map_states.end()));
-      id_last_state = (i ? states_cont : 0);
+      } while (map_states.find(string(last_state_generated)) != map_states.end());
+      id_last_state = i ? states_cont - 1 : 0;
       map_states[string(last_state_generated)] = states_cont++;
       states_name.push_back(make_pair(last_state_generated, linha[i+1] == '\n' ? true : false));
       afnd[id_last_state][id_current_terminal].push_back(map_states[string(last_state_generated)]);
@@ -174,4 +188,54 @@ void print_afnd(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name) {
     }
     printf("\n");
   }
+}
+
+void print_file(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name) {
+  int i, j, k;
+  int first = 1;
+  FILE *output_file;
+  output_file = fopen("output/output.csv", "w");
+  fwrite(",", sizeof(char), 1, output_file);
+  for (i = 0; i < (int)terms_name.size(); i++) {
+    if (first) first = 0;
+    else fwrite(",", sizeof(char), 1, output_file);
+    fwrite((terms_name[i] == "") ? "eps" : terms_name[i].c_str(), sizeof(char), (terms_name[i] == "") ? 3 : 1, output_file);
+  }
+  fwrite("\n", sizeof(char), 1, output_file);
+  for (i = 0; i < l; i++) {
+    if (states_name[i].second) {
+      fwrite("*", sizeof(char), 1, output_file);
+    }
+    fwrite(states_name[i].first.c_str(), sizeof(char), strlen(states_name[i].first.c_str()), output_file);
+    for (j = 0; j < c; j++) {
+      fwrite(",", sizeof(char), 1, output_file);
+      for (k = 0, first = 1; k < (int)afnd[i][j].size(); k++) {
+        if (first && afnd[i][j][k] != -1) first = 0;
+        else if (afnd[i][j][k] != -1) fwrite(" ", sizeof(char), 1, output_file);
+        fwrite(afnd[i][j][k] == -1 ? "" : states_name[afnd[i][j][k]].first.c_str(), sizeof(char), afnd[i][j][k] == -1 ? 1 : strlen(states_name[afnd[i][j][k]].first.c_str()), output_file);
+      }
+    }
+    fwrite("\n", sizeof(char), 1, output_file);
+  }
+}
+
+void select_unreachable(int states_cont, int terms_cont, viii &afnd, vi &vis, int u) {
+  int i, j;
+  if (vis[u]) return;
+  vis[u] = 1;
+  for (i = 0; i < terms_cont; i++) {
+    for (j = 0; j < (int)afnd[u][i].size(); j++) {
+      if (afnd[u][i][j] != -1) {
+        select_unreachable(states_cont, terms_cont, afnd, vis, afnd[u][i][j]);
+      }
+    }
+  }
+}
+
+void minimize_afnd(int states_cont, int terms_cont, viii &afnd, vi &vis, vi &transition_cont) {
+  int i;
+  select_unreachable(states_cont, terms_cont, afnd, vis, 0);
+  for (i = 0; i < (int)transition_cont.size(); i++)
+  printf("Id: %d, Cont: %d\n", i, transition_cont[i]);
+  // remove_unreachable(states_cont, terms_cont, afnd, vis, 0);
 }

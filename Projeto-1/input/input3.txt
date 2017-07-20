@@ -1,0 +1,7 @@
+<S> ::= m<B> | a<A> | n<A> | d<D> | a<S> | b<A> | c<T> | a
+<B> ::= n<B> | u<D> | d<D>
+<C> ::= e<S> | eps
+<T> ::= s<C>
+abc
+aeiou
+carro

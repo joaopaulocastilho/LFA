@@ -1,7 +1,7 @@
-<S> ::= a<B> | a<A> | i<A> | o<B> | u<S> | u<A> | <A> | a
+<S> ::= a<B> | a<A> | i<A> | o<B> | u<S> | u<A> | <A> | a | eps
 <A> ::= a<A> | j<A> | i<A> | o<A> | u<A> | eps
 <B> ::= b<B>
-<C> ::= k<S>
-se
-entao
-senao
+<C> ::= k<S> | d<D>
+<D> ::= a<A>
+antonio
+dar

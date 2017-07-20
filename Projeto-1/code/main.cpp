@@ -26,14 +26,21 @@ int main(void) {
   vs terms_name; //vector onde a posição i corresponde ao i-ésimo terminal.
   map<string, int> map_states; //Mapeando os não terminais para um ID.
   map<string, int> map_terms; //Mapeia os terminais para saber se já está no autômato.
+  vi transition_cont; //Map para saber quantas transições tem cada não terminal.
   char last_state_generated[MAX_STATE];
   FILE *input_file;
   input_file = fopen("input/input.txt", "r");
-  symbols_mape(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, states_qtty);
+  symbols_mape(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, states_qtty, transition_cont);
   printf("Estados: %d Terminais: %d\n", states_qtty, terms_cont);
   viii afnd(states_qtty, vii(terms_cont, vi())); //Declarando o AFND
+  vi alive (states_qtty, 0);
   create_afnd(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, afnd, last_state_generated);
+  minimize_afnd(states_cont, terms_cont, afnd, alive, transition_cont);
   print_afnd(states_cont, terms_cont, afnd, states_name, terms_name);
+  print_file(states_cont, terms_cont, afnd, states_name, terms_name);
   fclose(input_file);
   return 0;
 }
+
+//OBESERVASÕIS <<
+//mape_token recebe vpsb &states_name, mas não o usa.
