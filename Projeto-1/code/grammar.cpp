@@ -29,7 +29,7 @@ int take_term_name(char linha[], char term[], int i) {
 }
 
 
-void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], int &states_qtty) {
+void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], int &states_qtty, vi &transition_cont, set<string>&initial_state_terms) {
   int i;
   char linha_tmp[2];
   linha_tmp[1] = '\0';
@@ -42,12 +42,21 @@ void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<strin
     if (map_terms.find(string(linha_tmp)) == map_terms.end()) {
       map_terms[string(linha_tmp)] = terms_cont++;
       terms_name.push_back(string(linha_tmp));
+      transition_cont.push_back(0);
+    }
+    if (i == 0) {
+      if (initial_state_terms.find(string(linha_tmp)) == initial_state_terms.end()) {
+        initial_state_terms.insert(string(linha_tmp));
+        transition_cont[map_terms[string(linha_tmp)]]++;
+      }
+    } else {
+        transition_cont[map_terms[string(linha_tmp)]]++;
     }
   }
   states_qtty += strlen(linha) - 1;
 }
 
-void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], vi &transition_cont) {
+void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], vi &transition_cont, set<string>&initial_state_terms) {
   int i, j, flag, id_current_state = 0;
   char state[MAX], term[MAX];
   //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
@@ -63,7 +72,6 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   //Tem que mapear todos os símbolos terminais até o \n
   flag = 1;
   set<string>terminals_rule;
-  set<string>initial_state_terms;
   while (flag) {
     i = take_term_name(linha, term, i);
     //Verificar se o terminal já está no map, se não estiver, insere.
@@ -77,9 +85,11 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
     }
     //Este if é para a minimização do automato, pois precisaremos saber se temos que eliminar o terminal ou não.
     if (strcmp(term, "eps") && terminals_rule.find(string(term)) == terminals_rule.end()) {
+      if (states_cont == 1) {
+        initial_state_terms.insert(string(term));
+      }
       terminals_rule.insert(string(term));
       transition_cont[map_terms[string(term)]]++; //Vetor que conta quantas transições é feita de um terminal a partir do estado.
-      printf("%s | %d\n", term, transition_cont[map_terms[string(term)]]);
     }
     //Quer dizer que não terá mais produções naquela regra da gramática
     if ((i = next_simb(linha, i, '|')) == -1) flag = 0;
@@ -91,12 +101,15 @@ void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   int i, j, id_current_state = 0;
   char linha[MAX];
   fseek(input_file, 0, SEEK_SET);
+  set<string>initial_state_terms;
   while (fgets(linha, MAX, input_file)) {
-    if (next_simb(linha, 0, '<') == -1) mape_token(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, states_qtty);
-    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont);
-    printf("--------------------------------------\n"); ///DEBUGAÇÃO
+    if (next_simb(linha, 0, '<') == -1) mape_token(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, states_qtty, transition_cont, initial_state_terms);
+    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont, initial_state_terms);
   }
   states_qtty += states_cont;
+  for (int dbp = 0; dbp < (int)terms_name.size(); dbp++) {
+    printf("%s | %d\n", terms_name[dbp].c_str(), transition_cont[dbp]);
+  }
 }
 
 void new_state_inc(char *state) {
