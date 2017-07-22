@@ -1,13 +1,3 @@
-<S> ::= a<B> | a<A> | i<A> | o<B> | u<S> | u<A> | <A> | a
-<A> ::= a<A> | j<A> | i<A> | o<A> | u<A> | eps
-<B> ::= b<B>
-<C> ::= k<S>
-<D> ::= n<A> | q<A> | o<A> | t<A> | s<A> | eps
-se
-entao
-senao
-enton
-rola
-penis
-pinto
-mastro
+<S> ::= a<B> | b<A> | b | eps
+<A> ::= a<B> | b<A>
+<B> ::= c<B>

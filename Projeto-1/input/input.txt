@@ -3,6 +3,7 @@
 <B> ::= b<B>
 <C> ::= k<S> | d<D>
 <D> ::= a<A>
+<E> ::= z<E> | eps
 se
 entao
 senao

@@ -56,7 +56,7 @@ void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<strin
   states_qtty += strlen(linha) - 1;
 }
 
-void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], vi &transition_cont, set<string>&initial_state_terms) {
+void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], vi &transition_cont, set<string>&initial_state_terms, int &lim) {
   int i, j, flag, id_current_state = 0;
   char state[MAX], term[MAX];
   //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
@@ -64,6 +64,7 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   if (map_states.find(string(state)) == map_states.end()) {
     id_current_state = states_cont;
     map_states[string(state)] = states_cont++;
+    lim++;
     states_name.push_back(make_pair(string(state), false));
   }
   //Mapear os simbolos terminais
@@ -97,19 +98,16 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   }
 }
 
-void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, int &states_qtty, vi &transition_cont) {
+void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, int &states_qtty, vi &transition_cont, int &lim) {
   int i, j, id_current_state = 0;
   char linha[MAX];
   fseek(input_file, 0, SEEK_SET);
   set<string>initial_state_terms;
   while (fgets(linha, MAX, input_file)) {
     if (next_simb(linha, 0, '<') == -1) mape_token(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, states_qtty, transition_cont, initial_state_terms);
-    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont, initial_state_terms);
+    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont, initial_state_terms, lim);
   }
   states_qtty += states_cont;
-  for (int dbp = 0; dbp < (int)terms_name.size(); dbp++) {
-    printf("%s | %d\n", terms_name[dbp].c_str(), transition_cont[dbp]);
-  }
 }
 
 void new_state_inc(char *state) {
@@ -203,24 +201,27 @@ void print_afnd(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name) {
   }
 }
 
-void print_file(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name) {
+void print_file(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name, vi &transition_cont, vi &alive) {
   int i, j, k;
   int first = 1;
   FILE *output_file;
   output_file = fopen("output/output.csv", "w");
   fwrite(",", sizeof(char), 1, output_file);
   for (i = 0; i < (int)terms_name.size(); i++) {
+    if (!transition_cont[i]) continue;
     if (first) first = 0;
     else fwrite(",", sizeof(char), 1, output_file);
     fwrite((terms_name[i] == "") ? "eps" : terms_name[i].c_str(), sizeof(char), (terms_name[i] == "") ? 3 : 1, output_file);
   }
   fwrite("\n", sizeof(char), 1, output_file);
   for (i = 0; i < l; i++) {
+    if (!alive[i]) continue;
     if (states_name[i].second) {
       fwrite("*", sizeof(char), 1, output_file);
     }
     fwrite(states_name[i].first.c_str(), sizeof(char), strlen(states_name[i].first.c_str()), output_file);
     for (j = 0; j < c; j++) {
+      if (!transition_cont[j]) continue;
       fwrite(",", sizeof(char), 1, output_file);
       for (k = 0, first = 1; k < (int)afnd[i][j].size(); k++) {
         if (first && afnd[i][j][k] != -1) first = 0;
@@ -232,23 +233,71 @@ void print_file(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name) {
   }
 }
 
-void select_unreachable(int states_cont, int terms_cont, viii &afnd, vi &vis, int u) {
+int select_valids(int states_cont, int terms_cont, viii &afnd, vi &vis, vi &reach_final, int u, int lim) {
   int i, j;
-  if (vis[u]) return;
   vis[u] = 1;
+  if (u >= lim) return 1;
   for (i = 0; i < terms_cont; i++) {
     for (j = 0; j < (int)afnd[u][i].size(); j++) {
       if (afnd[u][i][j] != -1) {
-        select_unreachable(states_cont, terms_cont, afnd, vis, afnd[u][i][j]);
+        if (!vis[afnd[u][i][j]]) {
+          reach_final[u] = select_valids(states_cont, terms_cont, afnd, vis, reach_final, afnd[u][i][j], lim) || reach_final[u];
+        }
       }
+    }
+  }
+  return reach_final[u];
+}
+
+void terminal_verification(vi &transition_cont, int state, viii &afnd, int &terms_cont, map<string, int> &map_terms, vs &terms_name, int lim) {
+  int i, j;
+  for (i = 0; i < terms_cont; i++) {
+    if (!afnd[state][i].empty()) transition_cont[i]--;
+  }
+}
+
+void remove_invalid_terms(int states_cont, int terms_cont, viii &afnd, vi &vis, vi &transition_cont, vpsb &states_name, vs &terms_name, map<string, int> &map_states, map<string, int> &map_terms, int lim) {
+  int i, j, k, flag;
+  for (i = 0; i < lim; i++) {
+    if (!vis[i]) {
+      terminal_verification(transition_cont, i, afnd, terms_cont, map_terms, terms_name, lim);
+    }
+  }
+  for (i = 0; i < lim; i++) {
+    if (!vis[i]) continue;
+    for (j = 0; j < terms_cont; j++) {
+      for (flag = 1, k = 0; k < (int)afnd[i][j].size(); k++) {
+        if (!vis[afnd[i][j][k]]) {
+          afnd[i][j].erase(afnd[i][j].begin() + k);
+          flag = 0;
+        }
+      }
+      if (!flag && afnd[i][j].empty()) transition_cont[j]--;
     }
   }
 }
 
-void minimize_afnd(int states_cont, int terms_cont, viii &afnd, vi &vis, vi &transition_cont) {
+void minimize_afnd(int states_cont, int terms_cont, viii &afnd, vi &vis, vi &transition_cont, vpsb &states_name, vs &terms_name, map<string, int> &map_states, map<string, int> &map_terms, int &lim) {
   int i;
-  select_unreachable(states_cont, terms_cont, afnd, vis, 0);
-  for (i = 0; i < (int)transition_cont.size(); i++)
-  printf("Id: %d, Cont: %d\n", i, transition_cont[i]);
+  vi reach_final;
+  //Inicializa o vector de reach_final, onde cada estado marcado com 1 inicialmente é final
+  for (i = 0; i < states_cont; i++) {
+    reach_final.push_back(states_name[i].second);
+  }
+  //lança a DFS no estado 0, inicial, para já ver os alcançáveis a partir de S
+  select_valids(states_cont, terms_cont, afnd, vis, reach_final, 0, lim);
+  //Lança DFS em todos os estados que não foram marcados como que atingem final para ter certeza que eles realmente não atingem final.
+  for (i = 1; i < lim; i++) {
+    vi vis_tmp(states_cont, 0);
+    if (!reach_final[i] && vis[i]) select_valids(states_cont, terms_cont, afnd, vis_tmp, reach_final, i, lim);
+  }
+  //Esse for junta os estados que são alcançáveis a partir de S e que alcançam estado final. Depois dele, no vetor vis, todos estados com 1 devem permanecer na autômato.
+  for (i = 0; i < lim; i++) vis[i] &= reach_final[i];
+  for (i = lim; i < states_cont; i++) vis[i] = 1;
+  remove_invalid_terms(states_cont, terms_cont, afnd, vis, transition_cont, states_name, terms_name, map_states, map_terms, lim);
   // remove_unreachable(states_cont, terms_cont, afnd, vis, 0);
+  for (i = 0; i < states_cont; i++) {
+    printf("O estado %d%s é válido\n", i, vis[i] ? "" : " nao");
+  }
+  for (i = 0; i < terms_cont; i++) printf("transition_cont[%s], %d\n", terms_name[i].c_str(), transition_cont[i]);
 }
