@@ -16,7 +16,6 @@ typedef vector<int> vi;
 typedef vector<vi> vii;
 typedef vector<vii> viii;
 
-
 int main(void) {
   int i;
   int states_cont = 0; //Contador de estados. Diz quantos estados tem.
@@ -30,7 +29,7 @@ int main(void) {
   vi transition_cont; //Vector em quantos estados diferentes cada terminal aparece.
   char last_state_generated[MAX_STATE];
   FILE *input_file;
-  input_file = fopen("input/input2.txt", "r");
+  input_file = fopen("input/input5.txt", "r");
   symbols_mape(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, states_qtty, transition_cont, lim);
   printf("Estados: %d Terminais: %d\n", states_qtty, terms_cont);
   viii afnd(states_qtty, vii(terms_cont, vi())); //Declarando o AFND

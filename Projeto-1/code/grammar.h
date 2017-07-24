@@ -8,6 +8,7 @@
 #include<vector>
 #include<map>
 #include<set>
+#include"generate_state.h"
 using namespace std;
 
 typedef pair<string, bool>psb;

@@ -28,7 +28,6 @@ int take_term_name(char linha[], char term[], int i) {
   return i;
 }
 
-
 void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], int &states_qtty, vi &transition_cont, set<string>&initial_state_terms) {
   int i;
   char linha_tmp[2];
@@ -56,7 +55,7 @@ void mape_token(FILE *input_file, int &states_cont, vpsb &states_name, map<strin
   states_qtty += strlen(linha) - 1;
 }
 
-void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], vi &transition_cont, set<string>&initial_state_terms, int &lim) {
+void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, char linha[], vi &transition_cont, set<string>&initial_state_terms, int &lim, int &states_qtty) {
   int i, j, flag, id_current_state = 0;
   char state[MAX], term[MAX];
   //passar o nome do estado (que está a esquerda) para o vetor auxiliar "state". "i" começa depois da primeira ocorrencia do caractere '<' na linha.
@@ -76,8 +75,11 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   while (flag) {
     i = take_term_name(linha, term, i);
     //Verificar se o terminal já está no map, se não estiver, insere.
-    if (!strcmp(term, "eps") || linha[i] != '<') {
+    if (!strcmp(term, "eps")) { //Removido: || linha[i] != '<'
       states_name[id_current_state].second = true;
+    }
+    if (linha[i] != '<') {
+      states_qtty++;
     }
     if (strcmp(term, "eps") && map_terms.find(string(term)) == map_terms.end()) {
       map_terms[string(term)] = terms_cont++;
@@ -105,28 +107,16 @@ void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   set<string>initial_state_terms;
   while (fgets(linha, MAX, input_file)) {
     if (next_simb(linha, 0, '<') == -1) mape_token(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, states_qtty, transition_cont, initial_state_terms);
-    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont, initial_state_terms, lim);
+    else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont, initial_state_terms, lim, states_qtty);
   }
   states_qtty += states_cont;
-}
-
-void new_state_inc(char *state) {
-  if (state[0] == '\0') {
-    state[0] = 'A';
-    state[1] = '\0';
-  }
-  else if (state[0] == 'Z') {
-    state[0] = 'A';
-    new_state_inc(state + sizeof(char));
-  }
-  else state[0]++;
 }
 
 void tokens_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, viii &afnd, char last_state_generated[], char linha[]) {
   int i, id_current_terminal, id_last_state;
   char linha_tmp[2];
+  //last_state_generated[0] = '\0';
   linha_tmp[1] = '\0';
-  last_state_generated[0] = '\0';
   do {
     for (i = 0; linha[i] != '\n'; i++) {
       linha_tmp[0] = linha[i];
@@ -146,6 +136,7 @@ void create_afnd(FILE *input_file, int &states_cont, vpsb &states_name, map<stri
   int i, j, flag = 1;
   int id_current_state, id_current_term, transition;
   char linha[MAX], state[MAX], term[MAX];
+  last_state_generated[0] = '\0';
   fseek(input_file, 0, SEEK_SET);
   while (fgets(linha, MAX, input_file)) {
     if (next_simb(linha, 0, '<') == -1) {
@@ -167,7 +158,13 @@ void create_afnd(FILE *input_file, int &states_cont, vpsb &states_name, map<stri
           transition = map_states[string(state)];
         } else {
           //não há um não-terminal depois do terminal
-          transition = -1;
+          printf("LAST_STATE:%s\n", last_state_generated);
+          do {
+            new_state_inc(last_state_generated);
+          } while (map_states.find(string(last_state_generated)) != map_states.end());
+          transition = states_cont;
+          map_states[string(last_state_generated)] = states_cont++;
+          states_name.push_back(make_pair(last_state_generated, true));
         }
         //printf("estado: %d, terminal: %d\n", id_current_state, id_current_term); //otohu
         afnd[id_current_state][id_current_term].push_back(transition);
