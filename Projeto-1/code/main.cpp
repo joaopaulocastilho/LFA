@@ -5,6 +5,7 @@
 #include<vector>
 #include<map>
 #include"grammar.h"
+#include"determinize.h"
 using namespace std;
 
 #define MAX_STATE 1123
@@ -36,8 +37,9 @@ int main(void) {
   vi alive (states_qtty, 0);
   create_afnd(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, afnd, last_state_generated);
   minimize_afnd(states_cont, terms_cont, afnd, alive, transition_cont, states_name, terms_name, map_states, map_terms, lim);
-  print_afnd(states_cont, terms_cont, afnd, states_name, terms_name);
+  //print_afnd(states_cont, terms_cont, afnd, states_name, terms_name);
   print_file(states_cont, terms_cont, afnd, states_name, terms_name, transition_cont, alive);
+  automaton_determinize(afnd, states_cont, terms_cont, states_name, terms_name, transition_cont, alive, map_states, map_terms, last_state_generated);
   fclose(input_file);
   return 0;
 }
