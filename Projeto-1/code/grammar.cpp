@@ -269,6 +269,7 @@ void remove_invalid_terms(int states_cont, int terms_cont, viii &afnd, vi &vis, 
           flag = 0;
         }
       }
+      //Aqui quer dizer que foi removido pelo menos uma transição e no fim aquela transição ficou vazia, então pode tirar um do contador do terminal.
       if (!flag && afnd[i][j].empty()) transition_cont[j]--;
     }
   }

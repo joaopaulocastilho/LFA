@@ -1,3 +1,2 @@
-<S> ::= a<S> | b<A> | c
-<A> ::= c | d | e | f
-cebolinha
+<S> ::= a<S> | a<A> | a
+<A> ::= a<A>
