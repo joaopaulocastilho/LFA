@@ -61,14 +61,13 @@ void calculate_word_terms(vi &word_terms, map<char, int> &map_terms, int &terms_
   }
 }
 
-void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, char word[], stack<char> astack, int &accepted, vi stack_terms, map<pc, vs> &transitionsMap, char wtp[], int word_remove) {
+void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, char word[], stack<char> astack, int &accepted, vi stack_terms, map<pc, vs> &transitionsMap, char wtp[], int word_remove, vc &terms_name) {
   char word_local[MAX], aux;
   int i, j, k, flag;
   strcpy(word_local, word);
   if (accepted) return;
-  if (!astack.empty() && strlen(word_local) > 0) return;
   astack.pop();
-  for (i = (int)strlen(wtp) - 1; i <= 0; i--) {
+  for (i = (int)strlen(wtp) - 1; i >= 0; i--) {
     astack.push(wtp[i]);
   }
   if (word_remove) {
@@ -76,6 +75,7 @@ void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, c
       word_local[i] = word_local[i+1];
     }
   }
+  if (astack.empty() && strlen(word_local) > 0) return;
   if (astack.empty() && strlen(word_local) == 0) {
     accepted = 1;
     return;
@@ -88,18 +88,19 @@ void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, c
         string saux = it->second[i];
         for (k = 0, its = saux.begin(); its != saux.end(); ++its) {
           aux = *its;
-          if (map_terms.find(aux) != map_terms.end()) {
+          if (map_terms.find(aux) != map_terms.end() && aux != '#') {
             stack_mod[map_terms[aux]]++;
-            wtp[k++] = aux;
           }
+            wtp[k++] = aux;
         }
         wtp[k] = '\0';
+        if (!strcmp(wtp, "#")) wtp[0] = '\0';
         for (flag = 1, j = 0; j < terms_count; j++) {
           stack_mod[j] += stack_terms[j];
-          flag &= stack_mod[j] <= word_terms[i];
+          flag &= stack_mod[j] <= word_terms[j];
         }
         if (!flag) continue;
-        backtracking(word_terms, map_terms, terms_count, word_local, astack, accepted, stack_mod, transitionsMap, wtp, it->first.first == '#' ? 0 : 1);
+        backtracking(word_terms, map_terms, terms_count, word_local, astack, accepted, stack_mod, transitionsMap, wtp, it->first.first == '#' ? 0 : 1, terms_name);
         //  printf("%s\n", (it->second[i]).c_str());
       }
       break;
