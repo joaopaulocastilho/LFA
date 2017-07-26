@@ -1,3 +1,6 @@
-,a
-S,A S
-*A,
+,a,b
+S,C,E
+*B,B,B
+*C,D,B
+*D,D,D
+E,D,D

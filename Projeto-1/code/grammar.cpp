@@ -78,7 +78,8 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
     if (!strcmp(term, "eps")) { //Removido: || linha[i] != '<'
       states_name[id_current_state].second = true;
     }
-    if (linha[i] != '<') {
+    //Quer dizer que não tem uma transição depois do terminal, então teremos que criar um novo estado.
+    if (linha[i] != '<' && strcmp(term, "eps")) {
       states_qtty++;
     }
     if (strcmp(term, "eps") && map_terms.find(string(term)) == map_terms.end()) {
@@ -293,9 +294,4 @@ void minimize_afnd(int states_cont, int terms_cont, viii &afnd, vi &vis, vi &tra
   for (i = 0; i < lim; i++) vis[i] &= reach_final[i];
   for (i = lim; i < states_cont; i++) vis[i] = 1;
   remove_invalid_terms(states_cont, terms_cont, afnd, vis, transition_cont, states_name, terms_name, map_states, map_terms, lim);
-  // remove_unreachable(states_cont, terms_cont, afnd, vis, 0);
-  for (i = 0; i < states_cont; i++) {
-    printf("O estado %d%s é válido\n", i, vis[i] ? "" : " nao");
-  }
-  for (i = 0; i < terms_cont; i++) printf("transition_cont[%s], %d\n", terms_name[i].c_str(), transition_cont[i]);
 }

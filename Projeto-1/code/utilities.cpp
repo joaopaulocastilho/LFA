@@ -1,4 +1,4 @@
-#include"generate_state.h"
+#include"utilities.h"
 
 void new_state_inc(char *state) {
   if (state[0] == '\0') {
