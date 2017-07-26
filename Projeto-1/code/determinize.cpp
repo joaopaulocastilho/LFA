@@ -1,4 +1,5 @@
 #include"determinize.h"
+#include"grammar.h"
 
 void print_dictionary(vii &states_dictionary, vpsb &names) {
   int i, j;
@@ -21,7 +22,7 @@ void dictionary_initialize(int n, vii &states_dictionary) {
   }
 }
 
-int create_new_state(viii &afnd, int i, int j, int &states_cont, map <string, int> &map_states, vpsb &states_name, int &terms_cont, vii &states_dictionary, char last_state_generated[], int new_final, vi &alive) {
+int create_new_state(viii &afnd, int i, int j, int &states_cont, map <string, int> &map_states, vpsb &states_name, int &terms_cont, vii &states_dictionary, char last_state_generated[], int new_final, vi &alive, vs &terms_name) {
   int k, l, m, n, state_composition, find_composition_states, insert_automaton, my_state;
   do {
     new_state_inc(last_state_generated);
@@ -50,7 +51,7 @@ int create_new_state(viii &afnd, int i, int j, int &states_cont, map <string, in
         for (n = 0; n < (int)states_dictionary[find_composition_states].size(); n++) {
           // printf("saoecuh\n");
           insert_automaton = states_dictionary[find_composition_states][n];
-          if (!(find(afnd[my_state][k].begin(), afnd[my_state][k].end(), insert_automaton) != afnd[my_state][k].end())) {
+          if (find(afnd[my_state][k].begin(), afnd[my_state][k].end(), insert_automaton) == afnd[my_state][k].end()) {
             afnd[my_state][k].push_back(insert_automaton);
           }
         }
@@ -59,13 +60,13 @@ int create_new_state(viii &afnd, int i, int j, int &states_cont, map <string, in
     if ((int)afnd[my_state][k].size() > 1) {
       //Tem que tratar indeterminismo
       sort(afnd[my_state][k].begin(), afnd[my_state][k].end());
-      transition_determinize(afnd, my_state, k, states_cont, map_states, states_name, terms_cont, states_dictionary, last_state_generated, alive);
+      transition_determinize(afnd, my_state, k, states_cont, map_states, states_name, terms_cont, states_dictionary, last_state_generated, alive, terms_name);
     }
   }
   return my_state;
 }
 
-void transition_determinize(viii &afnd, int i, int j, int &states_cont, map <string, int> &map_states, vpsb &states_name, int &terms_cont, vii &states_dictionary, char last_state_generated[], vi &alive) {
+void transition_determinize(viii &afnd, int i, int j, int &states_cont, map <string, int> &map_states, vpsb &states_name, int &terms_cont, vii &states_dictionary, char last_state_generated[], vi &alive, vs &terms_name) {
   int k, l, equal, transition, new_final;
   for (k = 0; k < (int)states_dictionary.size(); k++) {
     if (!(states_dictionary[k].size() == afnd[i][j].size())) continue;
@@ -79,10 +80,11 @@ void transition_determinize(viii &afnd, int i, int j, int &states_cont, map <str
     }
   }
   if (!equal) {
-    transition = create_new_state(afnd, i, j, states_cont, map_states, states_name, terms_cont, states_dictionary, last_state_generated, new_final, alive);
+    transition = create_new_state(afnd, i, j, states_cont, map_states, states_name, terms_cont, states_dictionary, last_state_generated, new_final, alive, terms_name);
   }
   afnd[i][j].clear();
   afnd[i][j].push_back(transition);
+  print_afnd(states_cont, terms_cont, afnd, states_name, terms_name);
   //printf("NOVO ESTADO: %s\n", states_name[afnd[i][j][0]].first.c_str());
 }
 
@@ -98,7 +100,7 @@ void automaton_determinize(viii &afnd, int &states_cont, int &terms_cont, vpsb &
       if ((int)afnd[i][j].size() > 1) {
         //Tem que tratar indeterminismo
         sort(afnd[i][j].begin(), afnd[i][j].end());
-        transition_determinize(afnd, i, j, states_cont, map_states, states_name, terms_cont, states_dictionary, last_state_generated, alive);
+        transition_determinize(afnd, i, j, states_cont, map_states, states_name, terms_cont, states_dictionary, last_state_generated, alive, terms_name);
       }
     }
   }
