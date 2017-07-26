@@ -67,7 +67,7 @@ int create_new_state(viii &afnd, int i, int j, int &states_cont, map <string, in
 }
 
 void transition_determinize(viii &afnd, int i, int j, int &states_cont, map <string, int> &map_states, vpsb &states_name, int &terms_cont, vii &states_dictionary, char last_state_generated[], vi &alive, vs &terms_name) {
-  int k, l, equal, transition, new_final;
+  int k, l, equal, transition, new_final = 0;
   for (k = 0; k < (int)states_dictionary.size(); k++) {
     if (!(states_dictionary[k].size() == afnd[i][j].size())) continue;
     for (equal = 1, new_final = l = 0; equal && l < (int)afnd[i][j].size(); l++) {
@@ -106,7 +106,7 @@ void automaton_determinize(viii &afnd, int &states_cont, int &terms_cont, vpsb &
   }
 }
 
-int select_valids(int states_cont, int terms_cont, viii &afnd, vi &vis, int u) {
+void select_valids(int states_cont, int terms_cont, viii &afnd, vi &vis, int u) {
   int i, j;
   vis[u] = 1;
   for (i = 0; i < terms_cont; i++) {
