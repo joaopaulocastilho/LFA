@@ -10,8 +10,8 @@ using namespace std;
 
 #define MAX_STATE 1123
 
-typedef pair<string, bool>psb;
-typedef vector<psb>vpsb;
+typedef pair<string, bool> psb;
+typedef vector<psb> vpsb;
 typedef vector<string> vs;
 typedef vector<int> vi;
 typedef vector<vi> vii;
@@ -30,7 +30,7 @@ int main(void) {
   vi transition_cont; //Vector em quantos estados diferentes cada terminal aparece.
   char last_state_generated[MAX_STATE];
   FILE *input_file;
-  input_file = fopen("input/input6.txt", "r");
+  input_file = fopen("input/input7.txt", "r");
   symbols_mape(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, states_qtty, transition_cont, lim);
   viii afnd(states_qtty, vii(terms_cont, vi())); //Declarando o AFND
   vi alive (states_qtty, 0);

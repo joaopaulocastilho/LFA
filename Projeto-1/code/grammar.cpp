@@ -197,6 +197,7 @@ void print_afnd(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name) {
     }
     printf("\n");
   }
+  printf("\n\n");
 }
 
 void print_file(int l, int c, viii &afnd, vpsb &states_name, vs &terms_name, vi &transition_cont, vi &alive) {

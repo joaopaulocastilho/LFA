@@ -1,5 +1,3 @@
-<S> ::= a<A> | b<B> | a<D>
-<A> ::= a<S> | b<C>
-<B> ::= a<C> | b<S>
-<C> := a<B> | b<A> | b<D>
-<D> ::= eps
+<S> ::= a<A> | a<B> | b<S> | b<A>
+<A> ::= a<S> | a<A> | b<B>
+<B> ::= a<B> | b<B> | eps
