@@ -18,7 +18,7 @@ typedef vector<int> vi;
 typedef vector<vi> vii;
 typedef vector<vii> viii;
 
-//Função que recebe um arquivo e mapeia todos os símbolos de uma gramática.
+//Função que recebe um arquivo e mapeia todos os símbolos de uma gramática. Ela é responsável por fazer o mapeamento de toda a entrada, tanto da gramática quanto dos tokens
 void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<string, int> &map_states, int &terms_cont, vs &terms_name, map<string, int> &map_terms, int &states_qtty, vi &transition_cont, int &lim);
 
 //Função que lê a gramática e completa o AFND

@@ -11,7 +11,6 @@ int next_simb(char linha[], int s, char simbol) {
   return i;
 }
 
-
 int take_state_name(char linha[], char state[], int i) {
   int j;
   for (i = next_simb(linha, i, '<') + 1, j = 0; linha[i] != '>'; i++) state[j++] = linha[i];
@@ -63,6 +62,7 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   if (map_states.find(string(state)) == map_states.end()) {
     id_current_state = states_cont;
     map_states[string(state)] = states_cont++;
+    //aumenta o limite para saber que o estado inserido pertence a uma gramática.
     lim++;
     states_name.push_back(make_pair(string(state), false));
   }
@@ -71,17 +71,19 @@ void mape_grammar(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   i = next_simb(linha, i, '=') + 1;
   //Tem que mapear todos os símbolos terminais até o \n
   flag = 1;
+  //O set<string> terminals_rule serve para sabermos se o terminal em questão já possui alguma transição por aquele estado, pois precisaremos saber depois para a minimização.
   set<string>terminals_rule;
   while (flag) {
     i = take_term_name(linha, term, i);
-    //Verificar se o terminal já está no map, se não estiver, insere.
-    if (!strcmp(term, "eps")) { //Removido: || linha[i] != '<'
-      states_name[id_current_state].second = true;
+    //Se o estado possui eps, é um estado final.
+    if (!strcmp(term, "eps")) {
+      states_name[id_current_state].second = true; //seta o estado como um estado final.
     }
     //Quer dizer que não tem uma transição depois do terminal, então teremos que criar um novo estado.
     if (linha[i] != '<' && strcmp(term, "eps")) {
-      states_qtty++;
+      states_qtty++; //Somente aumentamos o states_qtty para sabermos que precisaremos criar um novo estado, mas ele será setado como estado final na criação do automato.
     }
+    //Verificar se o terminal já está no map, se não estiver, insere.
     if (strcmp(term, "eps") && map_terms.find(string(term)) == map_terms.end()) {
       map_terms[string(term)] = terms_cont++;
       terms_name.push_back(string(term));
@@ -107,9 +109,11 @@ void symbols_mape(FILE *input_file, int &states_cont, vpsb &states_name, map<str
   fseek(input_file, 0, SEEK_SET);
   set<string>initial_state_terms;
   while (fgets(linha, MAX, input_file)) {
+    //Se cair no if, quer dizer que não será encontrado um não-terminal, portanto a linha pertence a um token, e a função mape_token é chamada. Senão a linha pertence a uma gramática e a função para mapeá-la é chamada.
     if (next_simb(linha, 0, '<') == -1) mape_token(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, states_qtty, transition_cont, initial_state_terms);
     else mape_grammar(input_file, states_cont, states_name, map_states, terms_cont, terms_name, map_terms, linha, transition_cont, initial_state_terms, lim, states_qtty);
   }
+  //O states_qtty é a quantidade de estados que o AFND terá, já contabilizando com os tokens, para a criação do autômato.
   states_qtty += states_cont;
 }
 
@@ -165,7 +169,7 @@ void create_afnd(FILE *input_file, int &states_cont, vpsb &states_name, map<stri
           } while (map_states.find(string(last_state_generated)) != map_states.end());
           transition = states_cont;
           map_states[string(last_state_generated)] = states_cont++;
-          states_name.push_back(make_pair(last_state_generated, true));
+          states_name.push_back(make_pair(last_state_generated, true)); //O caso em que o temos um terminal sem um não-terminal ao lado, portanto criamos um novo estado e setamos ele como final.
         }
         //printf("estado: %d, terminal: %d\n", id_current_state, id_current_term); //otohu
         afnd[id_current_state][id_current_term].push_back(transition);
