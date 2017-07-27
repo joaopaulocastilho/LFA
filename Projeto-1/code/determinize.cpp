@@ -36,7 +36,7 @@ int create_new_state(viii &afnd, int i, int j, int &states_cont, map <string, in
   for (k = 0; k < (int)afnd[i][j].size(); k++) {
     states_dictionary[my_state].push_back(afnd[i][j][k]);
   }
-  printf("Determinizando: Estado %s\n", states_name[i].first.c_str());
+  //printf("Determinizando: Estado %s\n", states_name[i].first.c_str());
   //print_dictionary(states_dictionary, states_name);
   vii new_line(terms_cont, vi());
   afnd.push_back(new_line);
@@ -84,6 +84,7 @@ void transition_determinize(viii &afnd, int i, int j, int &states_cont, map <str
   }
   afnd[i][j].clear();
   afnd[i][j].push_back(transition);
+  printf("Determinizando estado %s\n", states_name[i].first.c_str());
   print_afnd(states_cont, terms_cont, afnd, states_name, terms_name);
   //printf("NOVO ESTADO: %s\n", states_name[afnd[i][j][0]].first.c_str());
 }

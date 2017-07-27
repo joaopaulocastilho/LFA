@@ -61,7 +61,7 @@ void calculate_word_terms(vi &word_terms, map<char, int> &map_terms, int &terms_
   }
 }
 
-void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, char word[], stack<char> astack, int &accepted, vi stack_terms, map<pc, vs> &transitionsMap, char wtp[], int word_remove, vc &terms_name) {
+void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, char word[], stack<char> astack, int &accepted, vi stack_terms, map<pc, vs> &transitionsMap, char wtp[], int word_remove, vc &terms_name, int level) {
   char word_local[MAX], aux;
   int i, j, k, flag;
   strcpy(word_local, word);
@@ -80,6 +80,11 @@ void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, c
     accepted = 1;
     return;
   }
+  printf("Nivel da arvore de recursao: %d\n", level);
+  printf("Empilhando: %s\n", wtp);
+  printf("Topo da pilha: %c\n", astack.top());
+  printf("Fita de entrada: %s\n", word_local);
+  printf("-------------------------------------------\n");
   for(map<pc,vs>::const_iterator it = transitionsMap.begin(); it != transitionsMap.end(); ++it) {
     if (it->first.second == astack.top() && (it->first.first == word_local[0] || it->first.first == '#')) {
       for (i = 0; i < (int)it->second.size(); i++) {
@@ -100,7 +105,7 @@ void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, c
           flag &= stack_mod[j] <= word_terms[j];
         }
         if (!flag) continue;
-        backtracking(word_terms, map_terms, terms_count, word_local, astack, accepted, stack_mod, transitionsMap, wtp, it->first.first == '#' ? 0 : 1, terms_name);
+        backtracking(word_terms, map_terms, terms_count, word_local, astack, accepted, stack_mod, transitionsMap, wtp, it->first.first == '#' ? 0 : 1, terms_name, level + 1);
         //  printf("%s\n", (it->second[i]).c_str());
       }
       break;

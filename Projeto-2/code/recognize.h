@@ -25,7 +25,7 @@ void build_map_terms(map<pc, vs> &transitionsMap, map<char, int> &map_terms, vc 
 
 void calculate_word_terms(vi &word_terms, map<char, int> &map_terms, int &terms_count, char word[]);
 
-void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, char word[], stack<char> astack, int &accepted, vi stack_terms, map<pc, vs> &transitionsMap, char wtp[], int word_remove, vc &terms_name);
+void backtracking(vi &word_terms, map<char, int> &map_terms, int &terms_count, char word[], stack<char> astack, int &accepted, vi stack_terms, map<pc, vs> &transitionsMap, char wtp[], int word_remove, vc &terms_name, int level);
 
 
 #endif

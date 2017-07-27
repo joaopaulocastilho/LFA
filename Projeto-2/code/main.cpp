@@ -19,26 +19,30 @@ int main(void){
   map<char, int> map_terms;
   vc terms_name;
   FILE *inputFile;
-  inputFile = fopen("input/input2.txt", "r");
+  inputFile = fopen("input/input1.txt", "r");
   loadTransitions(inputFile, transitionsMap, first_stack);
   printTransitions(transitionsMap);
   build_map_terms(transitionsMap, map_terms, terms_name, terms_count);
+  printf("\nInforme a palavra de entrada (# para sair): ");
   while (trash = scanf(" %s", word), strcmp(word, "#")) {
     accepted = 0;
     vi word_terms(terms_count, 0);
     vi stack_terms(terms_count, 0);
     stack<char> astack;
     calculate_word_terms(word_terms, map_terms, terms_count, word);
+    printf("Contador de terminais da palavra:\n");
     for (int i = 0; i < terms_count; i++) {
       printf("%c -> %d\n", terms_name[i], word_terms[i]);
     }
+    printf("---------------------------------------------\n");
     //Vamos chamar o BT
     astack.push(first_stack);
-    printf("%c\n", first_stack);
     wtp[0] = first_stack;
     wtp[1] = '\0';
-    backtracking(word_terms, map_terms, terms_count, word, astack, accepted, stack_terms, transitionsMap, wtp, 0, terms_name);
-    printf("The word has%s been Accepted!\n", accepted ? "" : " not");
+    printf("Iniciando o reconhecimento da palavra %s\n", word);
+    backtracking(word_terms, map_terms, terms_count, word, astack, accepted, stack_terms, transitionsMap, wtp, 0, terms_name, 0);
+    printf("A PALAVRA INSERIDA%s FOI RECONHECIDA!\n", accepted ? "" : " NAO");
+    printf("\nInforme a palavra de entrada (# para sair): ");
   }
   trash++;
   return 0;
