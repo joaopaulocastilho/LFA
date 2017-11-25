@@ -1,6 +1,7 @@
-,a,b
-S,C,E
-*B,B,B
-C,D,B
-D,D,D
-E,D,D
+,a,b,f
+S,F,A,
+*A,H,A,
+*C,,,
+F,G,A,C
+G,G,A,C
+H,F,A,

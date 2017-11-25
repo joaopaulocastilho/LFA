@@ -1,0 +1,9 @@
+<S> ::= a<B> | a<A> | i<A> | o<B> | u<S> | u<A> | <A> | a
+<A> ::= a<A> | j<A> | i<A> | o<A> | u<A> | eps
+<B> ::= b<B>
+<C> ::= k<S> | d<D>
+<D> ::= a<A>
+<E> ::= z<E> | eps
+se
+entao
+senao

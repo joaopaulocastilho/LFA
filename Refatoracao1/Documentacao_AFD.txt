@@ -1,0 +1,44 @@
+---------------------------------------------------------------------------
+ARQUIVO main.cpp
+
+FUNCAO main
+
+-Declaração dos maps que mapeiam os nomes dos terminais e estados para seus respectivos id's (nome_term e nome_estado)
+-Declaração das variáveis de controle de quantidade de terminais e estados (qtd_terminais e qtd_estados)
+-Declara variável que comporta o arquivo de entrada (FILE *entrada)
+-Abre o arquivo e o atribui a variável, testando sua validade
+-Mapeia os nomes dos estados e terminais, e conta suas quantidades (mapearGramatica)
+---------------------------------------------------------------------------
+
+---------------------------------------------------------------------------
+ARQUIVO gramatica.h
+
+-Inclusão de bibliotecas utilizadas
+-Declaração das funções do arquivo "gramatica.cpp"
+---------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------
+ARQUIVO gramatica.cpp
+
+-Função mapearGramatica: Recebe como parâmetro o arquivo de entrada. Mapeia os nomes de todos os Estados e terminais, Contando suas quantidades.
+
+---------------------------------------------------------------------------
+
+---------------------------------------------------------------------------
+ARQUIVO utilidades.h
+
+-Declaração das funções do arquivo "utilidades.cpp"
+---------------------------------------------------------------------------
+
+---------------------------------------------------------------------------
+ARQUIVO utilidades.cpp
+
+-Função novoNomeEstado: Gera um novo nome a partir de um nome inicial
+-Função indProxChar: Recebe uma string, um índice inicia e um caractere alvo. Retorna o índice da primeira ocorrência do caractere alvo na string.
+Caso o caractere não seja encontrado, retorna -1;
+-Função pegaNomeEstado: Recebe uma string (a linha), uma string (nome do estado buscado), e o índice atual na string. Preenche a string com o nome
+do estado buscado e depois retorna a próxima posição depois do fim do nome do estado.
+-Função pegaNomeTerminal: Recebe uma string (a linha), outra string (nome do terminal a ser lido), e o índice do primeiro caractere do nome do
+terminal. Retorna o índice do primeiro caractere após o nome do terminal.
+---------------------------------------------------------------------------
