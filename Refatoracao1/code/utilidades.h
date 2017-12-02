@@ -32,4 +32,7 @@ void mostraTerminais(map<string, int> &nome_term);
 //Função utilizada para imprimir o map dos estados, com intuito de debug
 void mostraEstados(map<string, nterm_t> &nome_estado);
 
+//Função utilizada para imprimir o autôtomato na linha de comando
+void imprimeAutomato(vvvi &automato);
+
 #endif

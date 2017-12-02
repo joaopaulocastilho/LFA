@@ -1,4 +1,5 @@
 #include "gramatica.h"
+#include "utilidades.h"
 
 int main(void) {
   FILE *entrada;
@@ -8,6 +9,7 @@ int main(void) {
   }
   mapearGramatica(entrada);
   construirAfndGramatica(entrada);
+  imprimeAutomato(automato);
   return 0;
 }
 

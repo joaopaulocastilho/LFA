@@ -7,11 +7,14 @@ int qtd_estados = 0;
 int qtd_terms = 0;
 int qtd_novos_estados = 0;
 vvvi automato;
+vs term_nome;
+vs estado_nome;
 
 void mapearLinha(char linha[]) {
   char nome_novo_estado[TAM_NOME], nome_novo_terminal[TAM_NOME];
   int acabou_linha = 0, i = pegaNomeEstado(linha, nome_novo_estado, 0);
   nome_estado[string(nome_novo_estado)] = nterm_t(qtd_estados++, 0);
+  estado_nome.push_back(string(nome_novo_estado));
   printf("%s | %d\n", nome_novo_estado, nome_estado[string(nome_novo_estado)].id);
   for(i = indProxChar(linha, i, '=') + 1; !acabou_linha; i++){
     i = pegaNomeTerminal(linha, nome_novo_terminal, i);
@@ -19,8 +22,10 @@ void mapearLinha(char linha[]) {
        nome_estado[string(nome_novo_estado)].final = 1;
     if(linha[i] != '<' && strcmp(nome_novo_terminal, "eps")) qtd_novos_estados++;
     if(strcmp(nome_novo_terminal, "eps") &&
-       nome_term.find(string(nome_novo_terminal)) == nome_term.end())
+       nome_term.find(string(nome_novo_terminal)) == nome_term.end()){
       nome_term[string(nome_novo_terminal)] = qtd_terms++;
+      term_nome.push_back(string(nome_novo_terminal));
+    }
     if((i = indProxChar(linha, i, '|')) == -1) acabou_linha = 1;
   }
 }
@@ -52,6 +57,7 @@ void construirAfndGramatica(FILE *entrada){
         geraNomeValido(ultimo_nome);
         strcpy(estado_lido, ultimo_nome);
         nome_estado[string(ultimo_nome)] = nterm_t(qtd_estados++, 1);
+        estado_nome.push_back(string(ultimo_nome));
       }
       tmp[nome_term[string(terminal_lido)]].push_back(nome_estado[string(estado_lido)].id);
       if((i = indProxChar(linha, i, '|')) == -1) acabou_linha = 1;
