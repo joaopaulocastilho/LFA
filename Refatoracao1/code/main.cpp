@@ -1,10 +1,4 @@
-#include <stdio.h>
 #include "gramatica.h"
-
-map<string, int>nome_term;
-map<string, int>nome_estado;
-int qtd_terminais;
-int qtd_estados;
 
 int main(void) {
   FILE *entrada;
@@ -13,6 +7,7 @@ int main(void) {
     return 0;
   }
   mapearGramatica(entrada);
+  construirAfndGramatica(entrada);
   return 0;
 }
 
