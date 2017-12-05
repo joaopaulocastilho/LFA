@@ -5,14 +5,13 @@
 #include <string.h>
 #include <algorithm>
 #include <map>
-#include "automato.h"
 
 using namespace std;
 
-extern char ultimo_nome[TAM_NOME];
+#define TAM_LINHA 112345
+#define TAM_NOME 112
 
-//Gera um nome de estado válido (que ainda não exista)
-void geraNomeValido(char nome[]);
+extern char ultimo_nome[TAM_NOME];
 
 //Função para gerar o nome do próximo estado
 void novoNomeEstado(char *state);
@@ -25,11 +24,5 @@ int pegaNomeTerminal(char linha[], char term[], int i);
 
 //Procura pela primeira ocorrencia de um caractere (alvo) na string
 int indProxChar(char linha[], int s, char alvo);
-
-//Função utilizada para imprimir o map dos terminais, com intuito de debug
-void mostraTerminais(map<string, int> &nome_term);
-
-//Função utilizada para imprimir o map dos estados, com intuito de debug
-void mostraEstados(map<string, nterm_t> &nome_estado);
 
 #endif

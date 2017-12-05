@@ -2,12 +2,6 @@
 
 char ultimo_nome[TAM_NOME] = "\0";
 
-void geraNomeValido(char nome[]){
-  do{
-    novoNomeEstado(nome);
-  }while(nome_estado.find(string(ultimo_nome)) != nome_estado.end());
-}
-
 void novoNomeEstado(char *state) {
   if (state[0] == '\0') {
     state[0] = 'A';
@@ -43,16 +37,4 @@ int pegaNomeTerminal(char linha[], char term[], int i) {
     if (linha[i] != ' ') term[j++] = linha[i];
   term[j] = '\0';
   return i;
-}
-
-void mostraTerminais(map<string, int> &nome_term){
-  printf("A quantidade de terminais é: %d\n", (int) nome_term.size());
-  for (map<string, int>::iterator it = nome_term.begin(); it != nome_term.end(); it++)
-    printf("%d: %s\n", it->second, it->first.c_str());
-}
-
-void mostraEstados(map<string, nterm_t> &nome_estado){
-  printf("A quantidade de estados é: %d\n", (int) nome_estado.size());
-  for (map<string, nterm_t>::iterator it = nome_estado.begin(); it != nome_estado.end(); it++)
-    printf("%d: %s %s é final\n", it->second.id, it->first.c_str(), it->second.final ? "" : "não");
 }

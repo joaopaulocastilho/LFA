@@ -6,9 +6,7 @@
 #include <string>
 #include <utility>
 #include <stdio.h>
-
-#define TAM_LINHA 112345
-#define TAM_NOME 112
+#include "utilidades.h"
 
 using namespace std;
 
@@ -37,5 +35,11 @@ void construirAfndGramatica(FILE *entrada);
 
 //Função utilizada para imprimir o autôtomato na linha de comando
 void imprimeAutomato(vvvi &automato);
+
+//Função utilizada para imprimir o map dos terminais, com intuito de debug
+void mostraTerminais(map<string, int> &nome_term);
+
+//Função utilizada para imprimir o map dos estados, com intuito de debug
+void mostraEstados(map<string, nterm_t> &nome_estado);
 
 #endif

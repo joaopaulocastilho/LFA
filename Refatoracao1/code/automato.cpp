@@ -1,5 +1,4 @@
 #include "automato.h"
-#include "utilidades.h"
 
 map<string, int>nome_term;
 map<string, nterm_t>nome_estado;
@@ -54,7 +53,9 @@ void construirAfndGramatica(FILE *entrada){
       }
       if(linha[i] == '<') i = pegaNomeEstado(linha, estado_lido, i);
       else if(linha[i] == '|' || linha[i] == '\n'){
-        geraNomeValido(ultimo_nome);
+        do{
+          novoNomeEstado(ultimo_nome);
+        } while(nome_estado.find(string(ultimo_nome)) != nome_estado.end());
         strcpy(estado_lido, ultimo_nome);
         nome_estado[string(ultimo_nome)] = nterm_t(qtd_estados++, 1);
         estado_nome.push_back(string(ultimo_nome));
@@ -69,6 +70,8 @@ void construirAfndGramatica(FILE *entrada){
     automato.push_back(tmp);
   }
 }
+
+//Funções de impressão
 
 void imprimeAutomato(vvvi &automato){
   int i, j, k;
@@ -88,3 +91,16 @@ void imprimeAutomato(vvvi &automato){
     printf("\n");
   }
 }
+
+void mostraTerminais(map<string, int> &nome_term){
+  printf("A quantidade de terminais é: %d\n", (int) nome_term.size());
+  for (map<string, int>::iterator it = nome_term.begin(); it != nome_term.end(); it++)
+    printf("%d: %s\n", it->second, it->first.c_str());
+}
+
+void mostraEstados(map<string, nterm_t> &nome_estado){
+  printf("A quantidade de estados é: %d\n", (int) nome_estado.size());
+  for (map<string, nterm_t>::iterator it = nome_estado.begin(); it != nome_estado.end(); it++)
+    printf("%d: %s %s é final\n", it->second.id, it->first.c_str(), it->second.final ? "" : "não");
+}
+
