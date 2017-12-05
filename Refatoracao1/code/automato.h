@@ -1,5 +1,5 @@
-#ifndef GRAMATICA_H
-#define GRAMATICA_H
+#ifndef AUTOMATO_H
+#define AUTOMATO_H
 
 #include <vector>
 #include <map>
@@ -34,5 +34,8 @@ void mapearGramatica(FILE *entrada);
 
 //Essa função constroi a estrutura do automato a partir do arquivo de entrada
 void construirAfndGramatica(FILE *entrada);
+
+//Função utilizada para imprimir o autôtomato na linha de comando
+void imprimeAutomato(vvvi &automato);
 
 #endif

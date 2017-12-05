@@ -56,22 +56,3 @@ void mostraEstados(map<string, nterm_t> &nome_estado){
   for (map<string, nterm_t>::iterator it = nome_estado.begin(); it != nome_estado.end(); it++)
     printf("%d: %s %s é final\n", it->second.id, it->first.c_str(), it->second.final ? "" : "não");
 }
-
-void imprimeAutomato(vvvi &automato){
-  int i, j, k;
-  for(i = 0; i < (int)term_nome.size(); i++)
-    printf("   %s|",  term_nome[i] == "" ? "eps" : term_nome[i].c_str());
-  printf("\n");
-  for(i = 0; i < (int)estado_nome.size(); i++){
-    printf("%s%s:", nome_estado[estado_nome[i]].final ? "*" : " ", estado_nome[i].c_str());
-    for(j = 0; j < (int)automato[i].size(); j++){
-      printf("[");
-      for(k = 0; k < (int)automato[i][j].size(); k++){
-        if(k) printf(" ");
-        printf("%d", automato[i][j][k]);
-      }
-      printf("]");
-    }
-    printf("\n");
-  }
-}

@@ -1,0 +1,4 @@
+<S> ::= a<S> | a<A> | b<A>
+<A> ::= a<S> | a<A> | b<A> | eps
+af
+aa

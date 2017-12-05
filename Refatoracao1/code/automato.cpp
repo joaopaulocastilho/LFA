@@ -1,4 +1,4 @@
-#include "gramatica.h"
+#include "automato.h"
 #include "utilidades.h"
 
 map<string, int>nome_term;
@@ -67,5 +67,24 @@ void construirAfndGramatica(FILE *entrada){
   for(i = 0; i < qtd_novos_estados; i++){
     vvi tmp(qtd_terms);
     automato.push_back(tmp);
+  }
+}
+
+void imprimeAutomato(vvvi &automato){
+  int i, j, k;
+  for(i = 0; i < (int)term_nome.size(); i++)
+    printf("   %s|",  term_nome[i] == "" ? "eps" : term_nome[i].c_str());
+  printf("\n");
+  for(i = 0; i < (int)estado_nome.size(); i++){
+    printf("%s%s:", nome_estado[estado_nome[i]].final ? "*" : " ", estado_nome[i].c_str());
+    for(j = 0; j < (int)automato[i].size(); j++){
+      printf("[");
+      for(k = 0; k < (int)automato[i][j].size(); k++){
+        if(k) printf(" ");
+        printf("%d", automato[i][j][k]);
+      }
+      printf("]");
+    }
+    printf("\n");
   }
 }

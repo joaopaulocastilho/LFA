@@ -1,5 +1,4 @@
-#include "gramatica.h"
-#include "utilidades.h"
+#include "automato.h"
 
 int main(void) {
   FILE *entrada;
