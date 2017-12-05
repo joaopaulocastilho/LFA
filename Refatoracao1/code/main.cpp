@@ -1,4 +1,5 @@
 #include "automato.h"
+#include "determinimiza.h"
 
 int main(void) {
   FILE *entrada;
@@ -9,6 +10,7 @@ int main(void) {
   mapearGramatica(entrada);
   construirAfndGramatica(entrada);
   imprimeAutomato(automato);
+  minimiza();
   return 0;
 }
 

@@ -8,6 +8,7 @@ int qtd_novos_estados = 0;
 vvvi automato;
 vs term_nome;
 vs estado_nome;
+vi valido;
 
 void mapearLinha(char linha[]) {
   char nome_novo_estado[TAM_NOME], nome_novo_terminal[TAM_NOME];

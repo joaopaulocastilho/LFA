@@ -26,6 +26,7 @@ extern int qtd_estados_novos;
 extern vvvi automato;
 extern vs term_nome;
 extern vs estado_nome;
+extern vi valido;
 
 //Essa função recebe um arquivo de entrada e conta a quantidade de terminais e não terminais e os coloca no map.
 void mapearGramatica(FILE *entrada);

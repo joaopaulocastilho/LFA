@@ -3,7 +3,7 @@
 
 #include "automato.h"
 
-
-
+//Minimiza o Automato
+void minimiza();
 
 #endif
