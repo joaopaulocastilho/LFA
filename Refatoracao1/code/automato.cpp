@@ -9,6 +9,7 @@ vvvi automato;
 vs term_nome;
 vs estado_nome;
 vi valido;
+vi tem_transicao;
 
 void mapearLinha(char linha[]) {
   char nome_novo_estado[TAM_NOME], nome_novo_terminal[TAM_NOME];
@@ -70,6 +71,8 @@ void construirAfndGramatica(FILE *entrada){
     vvi tmp(qtd_terms);
     automato.push_back(tmp);
   }
+  valido.resize(qtd_estados, 1);
+  tem_transicao.resize(qtd_terms, 1);
 }
 
 //Funções de impressão
@@ -77,15 +80,17 @@ void construirAfndGramatica(FILE *entrada){
 void imprimeAutomato(vvvi &automato){
   int i, j, k;
   for(i = 0; i < (int)term_nome.size(); i++)
-    printf("   %s|",  term_nome[i] == "" ? "eps" : term_nome[i].c_str());
+    if(tem_transicao[i]) printf("   %s|",  term_nome[i] == "" ? "eps" : term_nome[i].c_str());
   printf("\n");
   for(i = 0; i < (int)estado_nome.size(); i++){
+    if(valido[i] != 1) continue;
     printf("%s%s:", nome_estado[estado_nome[i]].final ? "*" : " ", estado_nome[i].c_str());
     for(j = 0; j < (int)automato[i].size(); j++){
+      if(!tem_transicao[j]) continue;
       printf("[");
       for(k = 0; k < (int)automato[i][j].size(); k++){
         if(k) printf(" ");
-        printf("%d", automato[i][j][k]);
+        printf("%s", estado_nome[automato[i][j][k]].c_str());
       }
       printf("]");
     }

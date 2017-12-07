@@ -1,0 +1,5 @@
+<S> ::= a | a<A> | <B> | eps | jegue
+<A> ::= <A> | b<A>
+<B> ::= c<B> | c | <D>
+<C> ::= c<C> | c | eps
+<D> ::= a<D> | irrelevante<D>

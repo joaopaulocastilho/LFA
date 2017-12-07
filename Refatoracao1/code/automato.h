@@ -20,13 +20,14 @@ nterm_t(int _id, int _final): id(_id), final(_final) {} };
 
 extern map<string, int>nome_term;
 extern map<string, nterm_t>nome_estado;
-extern int qtd_terminais;
+extern int qtd_terms;
 extern int qtd_estados;
 extern int qtd_estados_novos;
 extern vvvi automato;
 extern vs term_nome;
 extern vs estado_nome;
 extern vi valido;
+extern vi tem_transicao;
 
 //Essa função recebe um arquivo de entrada e conta a quantidade de terminais e não terminais e os coloca no map.
 void mapearGramatica(FILE *entrada);
