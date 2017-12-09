@@ -3,11 +3,7 @@
 
 int main(void) {
   FILE *entrada;
-<<<<<<< HEAD
   if (!(entrada = fopen("input/input8.txt", "r"))) {
-=======
-  if (!(entrada = fopen("input/input.txt", "r"))) {
->>>>>>> d9e01d05fa02a95c8f3ed659e40916666240bec9
     printf("Erro ao abrir o arquivo!");
     return 0;
   }
