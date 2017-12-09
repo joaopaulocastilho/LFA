@@ -1,4 +1,4 @@
-<S> ::= a | a<A> | <B> | eps | jegue
+<S> ::= a | a<B> | a<A> | eps | jegue
 <A> ::= <A> | b<A>
 <B> ::= c<B> | c | <D>
 <C> ::= c<C> | c | eps

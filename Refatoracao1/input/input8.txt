@@ -1,0 +1,7 @@
+<S> ::= a | c | <A> | d<C> | d<A> | d<B> | d<F> | a<A> | eps
+<A> ::= a<A> | d<F> | d<B> | d<A> | d<C> | a
+<B> ::= a | a<E> | a<C> | eps
+<C> ::= a<C>
+<E> ::= c<C>
+<F> ::= d<F>
+<G> ::= d
