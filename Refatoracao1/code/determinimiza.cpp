@@ -29,6 +29,7 @@ void limpaAutomato(){
 
 void minimiza() {
   int i;
+  if (!qtd_estados) return;
   for(i = 0; i < (int) valido.size(); i++) valido[i] = -1;
   valido[0] = dfs(0);
   limpaAutomato();

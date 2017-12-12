@@ -3,7 +3,7 @@
 
 int main(void) {
   FILE *entrada;
-  if (!(entrada = fopen("input/input8.txt", "r"))) {
+  if (!(entrada = fopen("input/input9.txt", "r"))) {
     printf("Erro ao abrir o arquivo!");
     return 0;
   }
@@ -19,6 +19,8 @@ int main(void) {
   imprimeAutomato(automato);
   minimiza();
   puts("AUTOMATO MINIMIZADO E DETERMINIZADO");
+  imprimeAutomato(automato);
+  mapearTokens(entrada);
   imprimeAutomato(automato);
   return 0;
 }

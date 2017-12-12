@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <string.h>
 #include <string>
 #include <utility>
 #include <stdio.h>
@@ -43,5 +44,9 @@ void mostraTerminais(map<string, int> &nome_term);
 
 //Função utilizada para imprimir o map dos estados, com intuito de debug
 void mostraEstados(map<string, nterm_t> &nome_estado);
+
+//Recebe um arquivo e mapeia os tokens
+void mapearTokens(FILE *entrada);
+
 
 #endif

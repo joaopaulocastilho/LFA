@@ -10,6 +10,7 @@ vs term_nome;
 vs estado_nome;
 vi valido;
 vi tem_transicao;
+int posicao_tokens = -1;
 
 void mapearLinha(char linha[]) {
   char nome_novo_estado[TAM_NOME], nome_novo_terminal[TAM_NOME];
@@ -35,6 +36,7 @@ void mapearGramatica(FILE *entrada) {
   char linha[TAM_LINHA];
   while (fgets(linha, TAM_LINHA, entrada)) {
     if (indProxChar(linha, 0, '<') != -1) mapearLinha(linha);
+    else { posicao_tokens = ftell(entrada) - strlen(linha); break; }
   }
   mostraTerminais(nome_term);
   mostraEstados(nome_estado);
@@ -110,3 +112,29 @@ void mostraEstados(map<string, nterm_t> &nome_estado){
     printf("%d: %s %s é final\n", it->second.id, it->first.c_str(), it->second.final ? "" : "não");
 }
 
+void mapearTokens(FILE *entrada) {
+  int estado_atual, i, j;
+  char linha[TAM_LINHA];
+  vvi aux;
+  if (posicao_tokens == -1) return;
+  if (qtd_estados == 0) {
+    nome_estado["S"] = nterm_t(qtd_estados++, 0);
+    estado_nome.push_back("S");
+    automato.push_back(aux);
+    valido.resize(qtd_estados, 1);
+  }
+  fseek(entrada, posicao_tokens, SEEK_SET);
+  while (fgets(linha, TAM_LINHA, entrada)) {
+    estado_atual = 0;
+    for (i = 0; linha[i] != '\n'; i++) {
+      string terminal_lido(1, linha[i]);
+      if (nome_term.find(terminal_lido) == nome_term.end()) {
+        nome_term[terminal_lido] = qtd_terms++;
+        term_nome.push_back(terminal_lido);
+        for (j = 0; j < (int)automato.size(); j++) automato[j].resize(qtd_terms);
+        tem_transicao.resize(qtd_terms, 1);
+      }
+    }
+    //printf("%s", linha);
+  }
+}
