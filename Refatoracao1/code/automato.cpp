@@ -100,6 +100,31 @@ void imprimeAutomato(vvvi &automato){
   }
 }
 
+void imprimeArquivo(void) {
+  int i, j, k;
+  FILE *saida;
+  saida = fopen("output/output.csv", "w");
+  fwrite(",", sizeof(char), 1, saida);
+  for(i = 0; i < (int)term_nome.size(); i++)
+    if(tem_transicao[i])
+      fprintf(saida, "%s,",  term_nome[i] == "" ? "eps" : term_nome[i].c_str());
+  fprintf(saida, "\n");
+  for(i = 0; i < (int)estado_nome.size(); i++){
+    if(valido[i] != 1) continue;
+    fprintf(saida, "%s%s,", nome_estado[estado_nome[i]].final ? "*" : " ", estado_nome[i].c_str());
+    for(j = 0; j < (int)automato[i].size(); j++){
+      if(!tem_transicao[j]) continue;
+      //fprintf(saida, "[");
+      for(k = 0; k < (int)automato[i][j].size(); k++){
+        //if(k) fprintf(saida, " ");
+        fprintf(saida, "%s", estado_nome[automato[i][j][k]].c_str());
+      }
+      fprintf(saida, ",");
+    }
+    fprintf(saida, "\n");
+  }
+}
+
 void mostraTerminais(map<string, int> &nome_term){
   printf("A quantidade de terminais é: %d\n", (int) nome_term.size());
   for (map<string, int>::iterator it = nome_term.begin(); it != nome_term.end(); it++)
@@ -113,7 +138,7 @@ void mostraEstados(map<string, nterm_t> &nome_estado){
 }
 
 void mapearTokens(FILE *entrada) {
-  int estado_atual, i, j;
+  int estado_atual, terminal_atual, i, j;
   char linha[TAM_LINHA];
   vvi aux;
   if (posicao_tokens == -1) return;
@@ -134,7 +159,28 @@ void mapearTokens(FILE *entrada) {
         for (j = 0; j < (int)automato.size(); j++) automato[j].resize(qtd_terms);
         tem_transicao.resize(qtd_terms, 1);
       }
+      if (estado_atual != 0) {
+        do{
+          novoNomeEstado(ultimo_nome);
+        } while(nome_estado.find(string(ultimo_nome)) != nome_estado.end());
+        nome_estado[string(ultimo_nome)] = nterm_t(qtd_estados++, 0);
+        estado_nome.push_back(string(ultimo_nome));
+        valido.resize(qtd_estados, 1);
+        automato.push_back(aux);
+        automato[estado_atual].resize(qtd_terms);
+      }
+      terminal_atual = nome_term[terminal_lido];
+      automato[estado_atual][terminal_atual].push_back(qtd_estados);
+      estado_atual = qtd_estados;
     }
+    do{
+      novoNomeEstado(ultimo_nome);
+    } while(nome_estado.find(string(ultimo_nome)) != nome_estado.end());
+    nome_estado[string(ultimo_nome)] = nterm_t(qtd_estados++, 1);
+    estado_nome.push_back(string(ultimo_nome));
+    valido.resize(qtd_estados, 1);
+    automato.push_back(aux);
+    automato[estado_atual].resize(qtd_terms);
     //printf("%s", linha);
   }
 }

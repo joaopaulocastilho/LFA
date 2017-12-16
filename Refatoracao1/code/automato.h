@@ -48,5 +48,7 @@ void mostraEstados(map<string, nterm_t> &nome_estado);
 //Recebe um arquivo e mapeia os tokens
 void mapearTokens(FILE *entrada);
 
+//Imprime o Autômato no csv
+void imprimeArquivo(void);
 
 #endif
