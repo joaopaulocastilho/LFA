@@ -1,0 +1,55 @@
+<S> ::= i<IF> | i<IN> | e<EL> | t<TH> | p<PR> | d<DB> | c<CH> | b<BO>|;<;>|:<:>|"<CONST>|=<=>|!<!>|g<g>|l<l>|j<id>|k<id>|x<id>|y<id>|z<id>|0<literal>|1<literal>|2<literal>|3<literal>|4<literal>|5<literal>|6<literal>|7<literal>|8<literal>|9<literal>
+<!> ::= =<!=>
+<!=> ::= eps
+<l> ::= t<lt>
+<g> ::= t<gt>
+<literal> ::= 0<literal>|1<literal>|2<literal>|3<literal>|4<literal>|5<literal>|6<literal>|7<literal>|8<literal>|9<literal>|eps
+<id> ::= j<id>|k<id>|x<id>|y<id>|z<id>|eps
+<lt> ::= eps
+<gt> ::= eps
+<IF> ::= f<if>
+<if> ::= eps
+<IN> ::= n<INT>
+<INT> ::= t<int>
+<int>::=eps
+<EL> ::= l<ELS>
+<ELS> ::= s<ELSE>
+<ELSE> ::= e<else>
+<else>::= eps | i<ELSEIF>
+<ELSEIF> ::= f<elseif>
+<elseif> ::=  eps
+<TH> ::= h<THE>
+<THE> ::= e<THEN>
+<THEN> ::= n<then>
+<then> ::= eps
+<PR> ::= r<PRI>
+<PRI> ::= i<PRIN>
+<PRIN> ::= n<PRINT>
+<PRINT> ::= t<print>
+<print> ::= eps
+<DB> ::= b<DBL>
+<DBL> ::= l<dbl>
+<dbl> ::= eps
+<CH> ::= h<CHR>
+<CHR> ::= r<chr>
+<chr> ::= eps
+<BO> ::= o<BOO>
+<BOO> ::= o<BOOL>
+<BOOL> ::= l<bool>
+<bool> ::= eps
+<;> ::= eps
+<:> ::=  eps
+<CONST> ::= a<CONST>|b<CONST>|c<CONST>|d<CONST>|e<CONST>|f<CONST>|g<CONST>|h<CONST>|i<CONST>|j<CONST>|k<CONST>|l<CONST>|m<CONST>|n<CONST>|o<CONST>|p<CONST>|q<CONST>|r<CONST>|s<CONST>|t<CONST>|u<CONST>|v<CONST>|w<CONST>|x<CONST>|y<CONST>|z<CONST>|1<CONST>|2<CONST>|3<CONST>|4<CONST>|5<CONST>|6<CONST>|7<CONST>|8<CONST>|9<CONST>|0<CONST>|"<const>
+<const> ::= eps
+<=>::= eps
+if
+print
+else
+elseif
+then
+int
+dbl
+chr
+bool
+lt
+gt

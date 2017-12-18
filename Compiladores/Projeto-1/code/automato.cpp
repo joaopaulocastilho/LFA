@@ -107,7 +107,9 @@ void imprimeArquivo(void) {
   fwrite(",", sizeof(char), 1, saida);
   for(i = 0; i < (int)term_nome.size(); i++)
     if(tem_transicao[i])
-      fprintf(saida, "%s,",  term_nome[i] == "" ? "eps" : term_nome[i].c_str());
+      fprintf(saida, "%s,",  term_nome[i] == "" ? "eps" :
+              (term_nome[i] == "," ? "\",\"" :
+               (term_nome[i] == ";" ? "\";\"" : term_nome[i].c_str())));
   fprintf(saida, "\n");
   for(i = 0; i < (int)estado_nome.size(); i++){
     if(valido[i] != 1) continue;
