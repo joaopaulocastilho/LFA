@@ -4,6 +4,7 @@
 #include "automato.h"
 
 typedef struct{
+  
   String linguicona;
 }tabela_simbolos;
 
