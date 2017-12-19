@@ -29,13 +29,14 @@ int main(void) {
   //imprimeAutomato(automato);
   //puts("MINIMIZAÇÃO FINAL");
   minimiza();
-  imprimeAutomato(automato);
+  //imprimeAutomato(automato);
   imprimeArquivo();
   if (!(entrada = fopen("input/code.txt", "r"))) {
     printf("Erro ao abrir o arquivo do codigo!");
     return 0;
   }
   analiseLexica(entrada);
+  imprimeTabelaSimbolos();
   return 0;
 }
 

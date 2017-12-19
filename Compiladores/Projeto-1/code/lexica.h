@@ -18,17 +18,14 @@ typedef struct {
 } linguicona_t;
 
 typedef struct {
-  string nome;
-  int valor;
-} identificador_t;
-
-typedef struct {
   vector<linguicona_t>linguicona;
-  vector<identificador_t>tabela_identificadores;
+  map<string, int>identificadores;
 } tabela_simbolos_t;
 
 extern tabela_simbolos_t tabela_simbolos;
 
 void analiseLexica(FILE *entrada);
+
+void imprimeTabelaSimbolos(void);
 
 #endif

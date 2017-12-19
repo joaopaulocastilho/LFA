@@ -17,7 +17,7 @@ void mapearLinha(char linha[]) {
   int acabou_linha = 0, i = pegaNomeEstado(linha, nome_novo_estado, 0);
   nome_estado[string(nome_novo_estado)] = nterm_t(qtd_estados++, 0);
   estado_nome.push_back(string(nome_novo_estado));
-  printf("%s | %d\n", nome_novo_estado, nome_estado[string(nome_novo_estado)].id);
+  //printf("%s | %d\n", nome_novo_estado, nome_estado[string(nome_novo_estado)].id);
   for(i = indProxChar(linha, i, '=') + 1; !acabou_linha; i++){
     i = pegaNomeTerminal(linha, nome_novo_terminal, i);
     if(!strcmp(nome_novo_terminal, "eps"))
@@ -38,8 +38,8 @@ void mapearGramatica(FILE *entrada) {
     if (indProxChar(linha, 0, '<') != -1) mapearLinha(linha);
     else { posicao_tokens = ftell(entrada) - strlen(linha); break; }
   }
-  mostraTerminais(nome_term);
-  mostraEstados(nome_estado);
+  //mostraTerminais(nome_term);
+  //mostraEstados(nome_estado);
 }
 
 void construirAfndGramatica(FILE *entrada){
@@ -48,7 +48,7 @@ void construirAfndGramatica(FILE *entrada){
   fseek(entrada, 0, SEEK_SET);
   for(nlinha = 0; nlinha < aux_qtd_estados; nlinha++){
     vvi tmp(qtd_terms);
-    fgets(linha, TAM_LINHA, entrada);
+    if (!fgets(linha, TAM_LINHA, entrada)) printf("O fgets nao leu\n");
     for(i = acabou_linha = 0, i = indProxChar(linha, i, '=') + 1; !acabou_linha; i++){
       i = pegaNomeTerminal(linha, terminal_lido, i);
       if(!strcmp(terminal_lido, "eps")){

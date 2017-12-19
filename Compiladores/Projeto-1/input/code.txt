@@ -1,11 +1,11 @@
-int a , b ;
+int a , b  ;
  a = i ;
  b = 0 ;
-enquanto a > 0 entao
+enquanto a } 0 entao
  a = a - 1 ;
  b = b + 1 ;
 fimenquanto
-se ( b == 5 ) entao
+se b == 5 entao
  a = b ;
 senao
  a = 11 ;

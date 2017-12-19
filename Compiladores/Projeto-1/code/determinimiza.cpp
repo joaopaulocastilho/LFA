@@ -33,9 +33,9 @@ void minimiza() {
   for(i = 0; i < (int) valido.size(); i++) valido[i] = -1;
   valido[0] = dfs(0);
   limpaAutomato();
-  for (i = 0; i < (int)valido.size(); i++)
-    printf("%d ", valido[i]);
-  printf("\n");
+  //  for (i = 0; i < (int)valido.size(); i++)
+  // printf("%d ", valido[i]);
+  //printf("\n");
 }
 
 void determiniza(){
@@ -49,7 +49,7 @@ void determiniza(){
       sort(automato[i][j].begin(), automato[i][j].end());
       if((k = composicaoExiste(tabela_composicoes, i, j)) == -1){
         k = geraEstado(tabela_composicoes, i, j);
-        printf("%s %s %s\n", estado_nome[k].c_str(), estado_nome[i].c_str(), term_nome[j].c_str());
+        // printf("%s %s %s\n", estado_nome[k].c_str(), estado_nome[i].c_str(), term_nome[j].c_str());
       }
       automato[i][j].clear();
       automato[i][j].push_back(k);
