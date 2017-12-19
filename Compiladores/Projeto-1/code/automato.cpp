@@ -103,7 +103,7 @@ void imprimeAutomato(vvvi &automato){
 void imprimeArquivo(void) {
   int i, j, k;
   FILE *saida;
-  saida = fopen("output/output.csv", "w");
+  saida = fopen("output/automato.csv", "w");
   fwrite(",", sizeof(char), 1, saida);
   for(i = 0; i < (int)term_nome.size(); i++)
     if(tem_transicao[i])

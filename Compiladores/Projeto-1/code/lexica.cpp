@@ -34,7 +34,7 @@ void analiseLexica(FILE *entrada){
     linha[strlen(linha) - 1] = ' ';
     fim_linha = strlen(linha);
     for(lexema[0] = i_lexema = i = 0; i < fim_linha; i++){
-      if(linha[i] == ' '){
+      if(linha[i] == ' ' || linha[i] == '@'){
         if (strlen(lexema)) {
           if (nome_estado[estado_nome[estado_atual]].final)
             colocaTabelaSimbolos(estado_atual, lexema, numero_linha);
@@ -46,6 +46,7 @@ void analiseLexica(FILE *entrada){
         }
         i_lexema = 0; lexema[0] = '\0';
         estado_atual = 0;
+        if(linha[i] == '@') i = fim_linha;
         continue;
       }
       if (nome_term.find(string(1, linha[i])) != nome_term.end() &&
@@ -84,5 +85,21 @@ void imprimeTabelaSimbolos(void) {
   for (map<string, int>::iterator it=tabela_simbolos.identificadores.begin();
        it != tabela_simbolos.identificadores.end(); ++it) {
     printf("%s | %d\n", it->first.c_str(), it->second);
+  }
+}
+
+void imprimeArquivoTabelaSimbolos(void){
+  int i;
+  FILE *saida;
+  saida = fopen("./output/tabela_simbolos.csv", "w");
+  fprintf(saida, "ROTULO, NOME, LINHA\n");
+  for (i = 0; i < (int)tabela_simbolos.linguicona.size(); i++)
+    fprintf(saida, "%s,%s,%d\n", transcreveRotulo(tabela_simbolos.linguicona[i].rotulo).c_str(),
+            tabela_simbolos.linguicona[i].nome.c_str(),
+            tabela_simbolos.linguicona[i].linha);
+  fprintf(saida, "\nIDENTIFICADORES\n");
+  for (map<string, int>::iterator it=tabela_simbolos.identificadores.begin();
+       it != tabela_simbolos.identificadores.end(); ++it) {
+    fprintf(saida, "%s,%d\n", it->first.c_str(), it->second);
   }
 }

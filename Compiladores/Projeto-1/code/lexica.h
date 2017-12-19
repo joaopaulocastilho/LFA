@@ -28,4 +28,6 @@ void analiseLexica(FILE *entrada);
 
 void imprimeTabelaSimbolos(void);
 
+void imprimeArquivoTabelaSimbolos(void);
+
 #endif

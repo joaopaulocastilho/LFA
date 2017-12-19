@@ -37,6 +37,7 @@ int main(void) {
   }
   analiseLexica(entrada);
   imprimeTabelaSimbolos();
+  imprimeArquivoTabelaSimbolos();
   return 0;
 }
 

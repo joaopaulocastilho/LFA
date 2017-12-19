@@ -2,11 +2,13 @@ int a , b  ;
  a = i ;
  b = 0 ;
 enquanto a } 0 entao
- a = a - 1 ;
- b = b + 1 ;
+ a = a - 1 ;@ Operacao relevante
+ b = b + 1 ;@ Operacao irrelevante
 fimenquanto
+@Isto é um if
 se b == 5 entao
  a = b ;
 senao
- a = 11 ;
+ a = 11 ; @ Meu chapéu
 fimse
+@fim do programa
