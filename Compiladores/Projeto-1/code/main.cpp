@@ -1,6 +1,7 @@
 #include "automato.h"
 #include "determinimiza.h"
 #include "lexica.h"
+#include "sintatica.h"
 
 int main(void) {
   FILE *entrada;
@@ -36,8 +37,9 @@ int main(void) {
     return 0;
   }
   analiseLexica(entrada);
-  imprimeTabelaSimbolos();
+  //imprimeTabelaSimbolos();
   imprimeArquivoTabelaSimbolos();
+  analiseSintatica();
   return 0;
 }
 

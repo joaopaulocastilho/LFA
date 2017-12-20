@@ -38,3 +38,11 @@ int pegaNomeTerminal(char linha[], char term[], int i) {
   term[j] = '\0';
   return i;
 }
+
+int pegaCampo(char linha[], char campo[], int i, char parada) {
+  int j;
+  for (j = 0; linha[i] != parada; i++)
+    campo[j++] = linha[i];
+  campo[j] = '\0';
+  return i;
+}

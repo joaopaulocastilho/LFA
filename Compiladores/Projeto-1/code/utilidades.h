@@ -25,4 +25,6 @@ int pegaNomeTerminal(char linha[], char term[], int i);
 //Procura pela primeira ocorrencia de um caractere (alvo) na string
 int indProxChar(char linha[], int s, char alvo);
 
+int pegaCampo(char linha[], char campo[], int i, char parada);
+
 #endif
