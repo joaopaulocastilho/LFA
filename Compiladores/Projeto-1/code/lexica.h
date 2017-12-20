@@ -15,6 +15,8 @@ typedef struct {
   int rotulo;
   string nome;
   int linha;
+  int estado_reconhecedor;
+  int novo_reconhecedor;
 } linguicona_t;
 
 typedef struct {

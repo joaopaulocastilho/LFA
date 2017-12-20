@@ -22,6 +22,8 @@ void colocaTabelaSimbolos(int estado_atual, char lexema[], int numero_linha) {
   elemento_linguicona.rotulo = rotulo_atual;
   elemento_linguicona.nome = string(lexema);
   elemento_linguicona.linha = numero_linha;
+  if(pegaRotulo(estado_atual) != IDENTIFICADOR) elemento_linguicona.estado_reconhecedor = estado_atual;
+  else elemento_linguicona.estado_reconhecedor = nome_estado["id"].id;
   tabela_simbolos.linguicona.push_back(elemento_linguicona);
   if (rotulo_atual == IDENTIFICADOR)
     tabela_simbolos.identificadores[string(lexema)] = 0;
@@ -79,8 +81,9 @@ string transcreveRotulo(int rotulo) {
 void imprimeTabelaSimbolos(void) {
   int i;
   for (i = 0; i < (int)tabela_simbolos.linguicona.size(); i++)
-    printf("%s | %s | %d\n", transcreveRotulo(tabela_simbolos.linguicona[i].rotulo).c_str(),
-           tabela_simbolos.linguicona[i].nome.c_str(), tabela_simbolos.linguicona[i].linha);
+    printf("%s | %s | %d | %d\n", transcreveRotulo(tabela_simbolos.linguicona[i].rotulo).c_str(),
+           tabela_simbolos.linguicona[i].nome.c_str(), tabela_simbolos.linguicona[i].linha,
+	   tabela_simbolos.linguicona[i].estado_reconhecedor);
   printf("\nIdentificadores\n");
   for (map<string, int>::iterator it=tabela_simbolos.identificadores.begin();
        it != tabela_simbolos.identificadores.end(); ++it) {
@@ -92,11 +95,11 @@ void imprimeArquivoTabelaSimbolos(void){
   int i;
   FILE *saida;
   saida = fopen("./output/tabela_simbolos.csv", "w");
-  fprintf(saida, "ROTULO, NOME, LINHA\n");
+  fprintf(saida, "ROTULO, NOME, LINHA, ESTADO_RECONHECEDOR\n");
   for (i = 0; i < (int)tabela_simbolos.linguicona.size(); i++)
-    fprintf(saida, "%s,%s,%d\n", transcreveRotulo(tabela_simbolos.linguicona[i].rotulo).c_str(),
+    fprintf(saida, "%s,%s,%d,%d\n", transcreveRotulo(tabela_simbolos.linguicona[i].rotulo).c_str(),
             tabela_simbolos.linguicona[i].nome.c_str(),
-            tabela_simbolos.linguicona[i].linha);
+            tabela_simbolos.linguicona[i].linha, tabela_simbolos.linguicona[i].estado_reconhecedor);
   fprintf(saida, "\nIDENTIFICADORES\n");
   for (map<string, int>::iterator it=tabela_simbolos.identificadores.begin();
        it != tabela_simbolos.identificadores.end(); ++it) {
