@@ -32,14 +32,17 @@ int main(void) {
   minimiza();
   //imprimeAutomato(automato);
   imprimeArquivo();
-  if (!(entrada = fopen("input/code.txt", "r"))) {
+  if (!(entrada = fopen("input/code2.txt", "r"))) {
     printf("Erro ao abrir o arquivo do codigo!");
     return 0;
   }
   analiseLexica(entrada);
   //imprimeTabelaSimbolos();
   imprimeArquivoTabelaSimbolos();
-  analiseSintatica();
+  if (reconheceuLexica) {
+    printf("Reconheceu Lexica\n");
+    analiseSintatica();
+  }
   return 0;
 }
 

@@ -2,6 +2,7 @@
 
 tabela_simbolos_t tabela_simbolos;
 vs reconhece_reservadas = {"RB", "TB", "WB", "BB", "YA", "EB", "OB", "MB"};
+int reconheceuLexica;
 
 int pegaRotulo(int estado_atual) {
   int i;
@@ -32,6 +33,7 @@ void colocaTabelaSimbolos(int estado_atual, char lexema[], int numero_linha) {
 void analiseLexica(FILE *entrada){
   int i, fim_linha, numero_linha, estado_atual = 0, i_lexema;
   char linha[MAX], lexema[MAX];
+  reconheceuLexica = 1;
   for (numero_linha = 1; fgets(linha, MAX, entrada); numero_linha++){
     linha[strlen(linha) - 1] = ' ';
     fim_linha = strlen(linha);
@@ -44,7 +46,9 @@ void analiseLexica(FILE *entrada){
             estado_atual = automato[estado_atual][nome_term[""]][0];
             if (nome_estado[estado_nome[estado_atual]].final)
               colocaTabelaSimbolos(estado_atual, lexema, numero_linha);
-          } else printf("Token não reconhecido na linha %d: \"%s\"\n", numero_linha, lexema);
+          } else {
+            reconheceuLexica = 0;
+            printf("Token não reconhecido na linha %d: \"%s\"\n", numero_linha, lexema); }
         }
         i_lexema = 0; lexema[0] = '\0';
         estado_atual = 0;
@@ -58,7 +62,9 @@ void analiseLexica(FILE *entrada){
         estado_atual = automato[estado_atual][nome_term[string(1, linha[i])]][0];
         continue;
       }
-      printf("Erro na linha %d, coluna %d. Caractere \"%c\" não esperado\n", numero_linha, i, linha[i]);
+      reconheceuLexica = 0;
+      printf("Erro na linha %d, coluna %d. Caractere \"%c\" não esperado\n",
+             numero_linha, i, linha[i]);
       i = indProxChar(linha, i, ' ');
       estado_atual = 0;
     }

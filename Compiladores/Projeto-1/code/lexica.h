@@ -25,11 +25,14 @@ typedef struct {
 } tabela_simbolos_t;
 
 extern tabela_simbolos_t tabela_simbolos;
+extern int reconheceuLexica;
 
 void analiseLexica(FILE *entrada);
 
 void imprimeTabelaSimbolos(void);
 
 void imprimeArquivoTabelaSimbolos(void);
+
+string transcreveRotulo(int rotulo);
 
 #endif

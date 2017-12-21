@@ -1,0 +1,25 @@
+int a , b  ;
+ a = i ;
+ b = 0 ;
+enquanto a } 0 entao
+ se a } b entao
+  a = a - 1 ;@ Operacao relevante
+ fimse
+ b = b + 1 ;@ Operacao irrelevante
+ enquanto meunomeehpaulo == a entao
+  braulio = gato ;
+ fimenquanto
+fimenquanto
+@Isto é um if
+se b == 5  entao
+ a = b ;
+senao
+ a = 11 ; @ Meu chapéu
+fimse
+se a entao
+ a = 2 ;
+fimse
+se b + 4 - 7 } 912 entao
+a = b + 1 ;
+fimse
+@fim do programa

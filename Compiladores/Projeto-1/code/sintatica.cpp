@@ -133,7 +133,8 @@ void analiseSintatica(void) {
   //imprimeFita();
   pilha_reconhecimento.push_back(pilha_t(0, ESTADO_PILHA));
   reconhece = reconhecimentoSintatico();
-  printf("%s\n", reconhece ? "RECONHECEU!!!!!!" : "Nao foi dessa vez, campeao");
+  if (reconhece) printf("Reconheceu na Sintatica!\n");
+  //printf("%s\n", reconhece ? "RECONHECEU!!!!!!" : "Nao foi dessa vez, campeao");
 }
 
 int reconhecimentoSintatico(){
@@ -167,6 +168,12 @@ int reconhecimentoSintatico(){
       pilha_reconhecimento.push_back(pilha_t(valor_atual, ESTADO_PILHA));
     }
     else if(tabela_parsing[estado_atual][simbolo_atual].acao == ACEITO) return 1;
-    else return 0;
+    else {
+      printf("Erro na linha %d, %s %s inesperado\n",
+             tabela_simbolos.linguicona[ponteiro_fita].linha,
+             transcreveRotulo(tabela_simbolos.linguicona[ponteiro_fita].rotulo).c_str(),
+             tabela_simbolos.linguicona[ponteiro_fita].nome.c_str());
+      return 0;
+    }
   }
 }
