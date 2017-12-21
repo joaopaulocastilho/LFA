@@ -112,7 +112,7 @@ void carregaFita(void) {
         simbolo_reconhecedor["num"];
     else tabela_simbolos.linguicona[i].novo_reconhecedor =
            simbolo_reconhecedor[tabela_simbolos.linguicona[i].nome];
-  eof.estado_reconhecedor = 0;
+  eof.novo_reconhecedor = 0;
   tabela_simbolos.linguicona.push_back(eof);
 }
 
@@ -138,12 +138,14 @@ void analiseSintatica(void) {
 
 int reconhecimentoSintatico(){
   int i, simbolo_atual, estado_atual, valor_atual, ponteiro_fita = 0;
-
   while(1){
     //Estado no topo da pilha
+    //printf("Topo da Pilha: %d %d\n", pilha_reconhecimento[topo(pilha_reconhecimento)].id,
+    //     pilha_reconhecimento[topo(pilha_reconhecimento)].tipo);
     if(pilha_reconhecimento[topo(pilha_reconhecimento)].tipo == ESTADO_PILHA){
       estado_atual = pilha_reconhecimento[topo(pilha_reconhecimento)].id;
-      simbolo_atual = tabela_simbolos.linguicona[ponteiro_fita].estado_reconhecedor;
+      simbolo_atual = tabela_simbolos.linguicona[ponteiro_fita].novo_reconhecedor;
+      //printf("%d\n", simbolo_atual);
     }
     //Simbolo no topo da pilha
     else{

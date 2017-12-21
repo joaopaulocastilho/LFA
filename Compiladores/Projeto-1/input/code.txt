@@ -6,9 +6,12 @@ enquanto a } 0 entao
  b = b + 1 ;@ Operacao irrelevante
 fimenquanto
 @Isto é um if
-se b == 5 entao
+se b == 5  entao
  a = b ;
 senao
  a = 11 ; @ Meu chapéu
+fimse
+se b + 4 - 7 } 912 entao
+a = b + 1 ;
 fimse
 @fim do programa
