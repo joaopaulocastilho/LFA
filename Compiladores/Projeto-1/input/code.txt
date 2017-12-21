@@ -1,4 +1,4 @@
-int a , b  ;
+int a , b ;
  a = i ;
  b = 0 ;
 enquanto a } 0 entao
